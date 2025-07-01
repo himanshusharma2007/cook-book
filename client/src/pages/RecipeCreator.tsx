@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaImage, FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import QuillEditorComponent from "../components/QuillEditor";
+import QuillEditor from "../components/QuillEditor";
 
 const RecipeCreator = () => {
   const [recipe, setRecipe] = useState({
@@ -14,7 +14,6 @@ const RecipeCreator = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Placeholder for backend submit API
     toast.success("Recipe created successfully!");
   };
 
@@ -33,12 +32,13 @@ const RecipeCreator = () => {
           onChange={(e) => setRecipe({ ...recipe, name: e.target.value })}
           className="w-full p-2 border rounded"
         />
-        <QuillEditorComponent
-          content={recipe.instructions}
+        <div className="wraper h-full border">
+
+        <QuillEditor
+          value={recipe.instructions}
           onChange={(value) => setRecipe({ ...recipe, instructions: value })}
-          placeholder="Enter recipe instructions..."
-          height="400px"
         />
+        </div>
         <div className="flex items-center border rounded p-2">
           <FaImage className="mr-2" />
           <input
