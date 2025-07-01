@@ -7,7 +7,7 @@ const Layout = () => {
   return (
     <div className=" bg-gray-100">
       <Header />
-      <main className="max-w-6xl mx-auto  p-4 min-h-[calc(100vh-64px)] ">
+      <main className="- min-h-[calc(100vh-64px)] ">
         <Outlet />
       </main>
       <footer className="bg-gray-800 text-white text-center p-4 ">
