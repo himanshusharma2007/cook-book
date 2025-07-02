@@ -4,11 +4,15 @@ import * as cookieParser from "cookie-parser";
 import { initializeDatabase } from "./models/index";
 import { join } from "path";
 import { NestExpressApplication } from "@nestjs/platform-express";
+import * as multer from "multer";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(cookieParser());
   app.useStaticAssets(join(__dirname, "..", "uploads"), { prefix: "/uploads/" });
+
+  const upload = multer({ dest: "uploads/" });
+  app.use("/recipes", upload.single("thumbnail"));
 
   await initializeDatabase();
   await app.listen(process.env.PORT || 5000);
