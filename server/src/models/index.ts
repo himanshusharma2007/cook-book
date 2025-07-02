@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
-import { User } from "./user.model.ts";
-import { Recipe } from "./recipe.model.ts";
-import { Favorite } from "./favorite.model.ts";
+import { User } from "./user.model";
+import { Recipe } from "./recipe.model";
+import { Favorite } from "./favorite.model";
 import * as dotenv from "dotenv";
 
 dotenv.config();
