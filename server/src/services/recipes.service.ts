@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Recipe } from "../models/recipe.model";
 import { User } from "../models/user.model";
 import { Op } from "sequelize";
@@ -7,14 +7,22 @@ import { Op } from "sequelize";
 export class RecipesService {
   async createRecipe(createRecipeDto: Partial<Recipe>, userId: number): Promise<Recipe> {
     const { name, instructions, ingredients, thumbnail } = createRecipeDto;
+    console.log('createRecipeDto', ingredients)
     if (!name || !instructions || !ingredients) {
       throw new UnauthorizedException("Name, instructions, and ingredients are required");
     }
-
+    let parsedIngredients = ingredients;
+    if (typeof ingredients === 'string') {
+      try {
+        parsedIngredients = JSON.parse(ingredients);
+      } catch (e) {
+        throw new BadRequestException('Invalid ingredients format. Please provide a valid JSON array.');
+      }
+    }
     const recipe = await Recipe.create({
       name,
       instructions,
-      ingredients,
+      ingredients: parsedIngredients,
       thumbnail,
       postedBy: userId,
     });

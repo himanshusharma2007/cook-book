@@ -3,18 +3,14 @@ import { AuthController } from "../controllers/auth.controller";
 import { AuthService } from "../services/auth.service";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { User } from "../models/user.model";
-import { AuthMiddleware } from "../middlewares/auth.middleware";
+import { AuthGuard } from "src/guards/auth.guard";
 import { APP_GUARD } from "@nestjs/core";
 
 @Module({
   imports: [SequelizeModule.forFeature([User])],
   controllers: [AuthController],
   providers: [
-    AuthService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthMiddleware,
-    },
+    AuthService
   ],
 })
 export class AuthModule {}

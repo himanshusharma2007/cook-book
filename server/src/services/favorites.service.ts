@@ -16,14 +16,21 @@ export class FavoritesService {
     return favorite;
   }
 
-  async findAll(userId: number): Promise<Recipe[]> {
-    const favorites = await Favorite.findAll({
-      where: { userId },
-      include: [{ model: Recipe, include: [User] }],
-    });
-    return favorites.map((favorite) => favorite.recipe);
-  }
+async findAll(userId: number): Promise<Recipe[]> {
+  const favorites = await Favorite.findAll({
+    where: { userId },
+    include: [Recipe]
+  });
 
+  const recipes = favorites.map(favorite => {
+    // Access the recipe from dataValues if the direct property doesn't work
+    const recipe = favorite.recipe || favorite.dataValues.recipe;
+    console.log('Recipe from dataValues:', recipe);
+    return recipe;
+  }).filter(recipe => recipe !== null);
+
+  return recipes;
+}
   async removeFavorite(recipeId: number, userId: number): Promise<void> {
     const favorite = await Favorite.findOne({ where: { userId, recipeId } });
     if (!favorite) throw new NotFoundException("Favorite not found");
