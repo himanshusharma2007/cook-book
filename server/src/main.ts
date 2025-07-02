@@ -15,6 +15,8 @@ async function bootstrap() {
   app.use("/recipes", upload.single("thumbnail"));
 
   await initializeDatabase();
-  await app.listen(process.env.PORT || 5000);
+  await app.listen(process.env.PORT || 5000, () => {
+    console.log(`Server is running on port ${process.env.PORT || 5000}`);
+  });
 }
 bootstrap();

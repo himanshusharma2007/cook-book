@@ -12,6 +12,7 @@ export class FavoritesController {
   @HttpCode(HttpStatus.CREATED)
   async add(@Param("id") id: string, @Req() req: Request) {
     try {
+      if (!req.user) throw new Error("Unauthorized");
       const recipeId = parseInt(id);
       const favorite = await this.favoritesService.addFavorite(recipeId, req.user.id);
       return { message: "Recipe added to favorites", favoriteId: favorite.id };
@@ -25,6 +26,7 @@ export class FavoritesController {
   @HttpCode(HttpStatus.OK)
   async findAll(@Req() req: Request) {
     try {
+      if (!req.user) throw new Error("Unauthorized");
       const recipes = await this.favoritesService.findAll(req.user.id);
       return { recipes };
     } catch (error) {
@@ -37,6 +39,7 @@ export class FavoritesController {
   @HttpCode(HttpStatus.OK)
   async remove(@Param("id") id: string, @Req() req: Request) {
     try {
+      if (!req.user) throw new Error("Unauthorized");
       const recipeId = parseInt(id);
       await this.favoritesService.removeFavorite(recipeId, req.user.id);
       return { message: "Recipe removed from favorites" };
