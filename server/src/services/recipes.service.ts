@@ -53,4 +53,15 @@ export class RecipesService {
     if (recipe.postedBy !== userId) throw new UnauthorizedException("You can only delete your own recipes");
     await recipe.destroy();
   }
+
+  async findByUser(userId: number, page: number = 1, limit: number = 10): Promise<{ recipes: Recipe[]; total: number }> {
+    const offset = (page - 1) * limit;
+    const { count, rows } = await Recipe.findAndCountAll({
+      where: { postedBy: userId },
+      offset,
+      limit,
+      order: [["postedAt", "DESC"]],
+    });
+    return { recipes: rows, total: count };
+  }
 }

@@ -67,6 +67,27 @@ export class RecipesController {
         }
     }
 
+    @Get("mine")
+    @UseGuards(AuthGuard)
+    @HttpCode(HttpStatus.OK)
+    async getMyRecipes(
+        @Req() req: Request,
+        @Query("page") page?: string,
+        @Query("limit") limit?: string
+    ) {
+        try {
+            if (!req.user) {
+                throw new UnauthorizedException("Unauthorized");
+            }
+            const pageNum = parseInt(page ?? "1");
+            const limitNum = parseInt(limit ?? "10");
+            const { recipes, total } = await this.recipesService.findByUser(req.user.id, pageNum, limitNum);
+            return { success: true, recipes, total, page: pageNum, limit: limitNum };
+        } catch (error) {
+            throw new InternalServerErrorException(error.message);
+        }
+    }
+
     @Delete(":id")
     @UseGuards(AuthGuard)
     @HttpCode(HttpStatus.OK)

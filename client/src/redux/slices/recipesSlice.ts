@@ -51,6 +51,14 @@ export const getRecipes = createAsyncThunk(
   }
 );
 
+export const getMyRecipes = createAsyncThunk(
+  "recipes/getMyRecipes",
+  async (params: { page?: number; limit?: number } = {}, thunkAPI) => {
+    const res = await recipesService.getMyRecipes(params.page, params.limit);
+    return { recipes: res.recipes, total: res.total, page: res.page, limit: res.limit };
+  }
+);
+
 export const deleteRecipe = createAsyncThunk(
   "recipes/deleteRecipe",
   async (id: number, thunkAPI) => {
@@ -98,6 +106,21 @@ const recipesSlice = createSlice({
       .addCase(getRecipes.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch recipes";
+      })
+      .addCase(getMyRecipes.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getMyRecipes.fulfilled, (state, action: PayloadAction<{ recipes: { id: number; name: string; postedBy: number }[]; total: number; page: number; limit: number }>) => {
+        state.loading = false;
+        state.recipes = action.payload.recipes;
+        state.total = action.payload.total;
+        state.page = action.payload.page;
+        state.limit = action.payload.limit;
+      })
+      .addCase(getMyRecipes.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch your recipes";
       })
       .addCase(deleteRecipe.pending, (state) => {
         state.loading = true;

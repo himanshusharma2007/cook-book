@@ -44,6 +44,16 @@ export const recipesService = {
     }
   },
 
+  getMyRecipes: async (page: number = 1, limit: number = 10): Promise<RecipesResponse> => {
+    try {
+      const params = { page, limit };
+      const response = await api.get("/recipes/mine", { params });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || "Failed to fetch your recipes");
+    }
+  },
+
   deleteRecipe: async (id: number): Promise<{ message: string }> => {
     try {
       const response = await api.delete(`/recipes/${id}`);

@@ -10,7 +10,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-gray-800 text-white h-16 px-20 flex justify-between items-center">
+    <header className="bg-orange-700 text-white h-16 px-20 flex justify-between items-center">
       <div className="text-xl font-bold">CookBook</div>
       <nav className="flex space-x-6">
         <NavLink
