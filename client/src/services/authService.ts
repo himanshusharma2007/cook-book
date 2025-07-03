@@ -33,9 +33,11 @@ export const authService = {
 
   login: async (data: LoginData): Promise<AuthResponse> => {
     try {
+      console.log("check")
       const response = await api.post("/auth/login", data);
       return response.data;
     } catch (error) {
+      console.log('error', error)
       throw new Error(error.response?.data?.message || "Login failed");
     }
   },

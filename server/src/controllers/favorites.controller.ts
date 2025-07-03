@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Delete, Param, Req, UseGuards, HttpCode, HttpStatus } from "@nestjs/common";
+import { Controller, Post, Get, Delete, Param, Req, UseGuards, HttpCode, HttpStatus, UnauthorizedException, BadRequestException, NotFoundException, InternalServerErrorException } from "@nestjs/common";
 import { FavoritesService } from "../services/favorites.service";
 import { Request } from "express";
 import { AuthGuard } from "src/guards/auth.guard";
@@ -12,12 +12,13 @@ export class FavoritesController {
   @HttpCode(HttpStatus.CREATED)
   async add(@Param("id") id: string, @Req() req: Request) {
     try {
-      if (!req.user) throw new Error("Unauthorized");
+      if (!req.user) throw new UnauthorizedException("Unauthorized");
       const recipeId = parseInt(id);
       const favorite = await this.favoritesService.addFavorite(recipeId, req.user.id);
       return { success: true, message: "Recipe added to favorites", favoriteId: favorite.id };
     } catch (error) {
-      return { success: false, statusCode: error.status || HttpStatus.BAD_REQUEST, message: error.message };
+      if (error instanceof UnauthorizedException) throw error;
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -26,11 +27,12 @@ export class FavoritesController {
   @HttpCode(HttpStatus.OK)
   async findAll(@Req() req: Request) {
     try {
-      if (!req.user) throw new Error("Unauthorized");
+      if (!req.user) throw new UnauthorizedException("Unauthorized");
       const recipes = await this.favoritesService.findAll(req.user.id);
       return { success: true, recipes };
     } catch (error) {
-      return { success: false, statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: error.message };
+      if (error instanceof UnauthorizedException) throw error;
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -39,12 +41,13 @@ export class FavoritesController {
   @HttpCode(HttpStatus.OK)
   async remove(@Param("id") id: string, @Req() req: Request) {
     try {
-      if (!req.user) throw new Error("Unauthorized");
+      if (!req.user) throw new UnauthorizedException("Unauthorized");
       const recipeId = parseInt(id);
       await this.favoritesService.removeFavorite(recipeId, req.user.id);
       return { success: true, message: "Recipe removed from favorites" };
     } catch (error) {
-      return { success: false, statusCode: error.status || HttpStatus.NOT_FOUND, message: error.message };
+      if (error instanceof UnauthorizedException) throw error;
+      throw new NotFoundException(error.message);
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query, Param, Delete, Req, UseGuards, HttpCode, HttpStatus, Res, UseInterceptors, UploadedFile, UnauthorizedException, BadRequestException } from "@nestjs/common";
+import { Controller, Post, Body, Get, Query, Param, Delete, Req, UseGuards, HttpCode, HttpStatus, Res, UseInterceptors, UploadedFile, UnauthorizedException, BadRequestException, NotFoundException, InternalServerErrorException } from "@nestjs/common";
 import { RecipesService } from "../services/recipes.service";
 import { Recipe } from "../models/recipe.model";
 import { Request, Response } from "express";
@@ -48,7 +48,8 @@ export class RecipesController {
                 message: "Recipe created successfully"
             };
         } catch (error) {
-            return { success: false, message: error.message };
+            if (error instanceof UnauthorizedException) throw error;
+            throw new BadRequestException(error.message);
         }
     }
 
@@ -62,7 +63,7 @@ export class RecipesController {
             const { recipes, total } = await this.recipesService.findAll(search, pageNum, limitNum);
             return { success: true, recipes, total, page: pageNum, limit: limitNum };
         } catch (error) {
-            return { success: false, message: error.message };
+            throw new InternalServerErrorException(error.message);
         }
     }
 
@@ -77,7 +78,8 @@ export class RecipesController {
             await this.recipesService.deleteRecipe(parseInt(id), req.user.id);
             return { success: true, message: "Recipe deleted successfully" };
         } catch (error) {
-            return { success: false, message: error.message };
+            if (error instanceof UnauthorizedException) throw error;
+            throw new NotFoundException(error.message);
         }
     }
 }

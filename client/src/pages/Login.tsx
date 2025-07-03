@@ -1,49 +1,70 @@
 import { useState } from "react";
 import { FaUser, FaLock } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../redux/slices/authSlice";
+import { useNavigate } from "react-router-dom";
+import type { RootState } from "../redux/store";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Placeholder for backend login API
-    toast.success("Login successful!");
+    try {
+      await dispatch(loginUser({ email, password })).unwrap();
+      toast.success("Login successful!");
+      navigate("/");
+    } catch (err) {
+      toast.error(err || "Login failed");
+    }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h1 className="text-2xl font-semibold mb-4 text-center">Login</h1>
-      <form onSubmit={handleLogin} className="space-y-4">
-        <div className="flex items-center border rounded p-2">
-          <FaUser className="mr-2" />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full outline-none"
-          />
-        </div>
-        <div className="flex items-center border rounded p-2">
-          <FaLock className="mr-2" />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full outline-none"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-        >
-          Login
-        </button>
-      </form>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
+        <h1 className="text-3xl font-bold text-center text-gray-800">Login</h1>
+        {error && <p className="text-red-500 text-center">{error}</p>}
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="relative">
+            <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
+          </div>
+          <div className="relative">
+            <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+        <p className="text-center text-sm text-gray-600">
+          Don’t have an account?{" "}
+          <a href="/register" className="text-blue-600 hover:underline">
+            Register
+          </a>
+        </p>
+      </div>
     </div>
   );
 };

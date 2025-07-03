@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, Get, Req, UseGuards, HttpCode, HttpStatus } from "@nestjs/common";
+import { Controller, Post, Body, Res, Get, Req, UseGuards, HttpCode, HttpStatus, BadRequestException, UnauthorizedException, NotFoundException, InternalServerErrorException } from "@nestjs/common";
 import { AuthService } from "../services/auth.service";
 import { User } from "../models/user.model";
 import { Response, Request } from "express";
@@ -16,7 +16,7 @@ export class AuthController {
             res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
             return { success: true, user: { id: user.id, name: user.name, email: user.email }, message: "User registered successfully" };
         } catch (error) {
-            return { success: false, statusCode: HttpStatus.BAD_REQUEST, message: error.message };
+            throw new BadRequestException(error.message);
         }
     }
 
@@ -28,7 +28,7 @@ export class AuthController {
             res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
             return { success: true, user: { id: user.id, name: user.name, email: user.email }, message: "Login successful" };
         } catch (error) {
-            return { success: false, statusCode: HttpStatus.UNAUTHORIZED, message: error.message };
+            throw new UnauthorizedException(error.message);
         }
     }
 
@@ -37,11 +37,12 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     async getMe(@Req() req: Request) {
         try {
-            if (!req.user) throw new Error("Unauthorized");
+            if (!req.user) throw new UnauthorizedException("Unauthorized");
             const user = await this.authService.getMe(req.user.id);
             return { success: true, user };
         } catch (error) {
-            return { success: false, statusCode: HttpStatus.NOT_FOUND, message: error.message };
+            if (error instanceof UnauthorizedException) throw error;
+            throw new NotFoundException(error.message);
         }
     }
 
@@ -53,7 +54,7 @@ export class AuthController {
             res.clearCookie("token");
             return { success: true, message: "Logged out successfully" };
         } catch (error) {
-            return { success: false, statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: "Logout failed" };
+            throw new InternalServerErrorException("Logout failed");
         }
     }
 }
