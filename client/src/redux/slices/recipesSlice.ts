@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import { recipesService } from "../../services/recipesService";
 
 interface RecipesState {
@@ -22,6 +23,21 @@ const initialState: RecipesState = {
 export const createRecipe = createAsyncThunk(
   "recipes/createRecipe",
   async (formData: { name: string; instructions: string; ingredients: string[]; thumbnail?: File }, thunkAPI) => {
+    // Debug logs for formData
+    for (const [key, value] of formData.entries()) {
+      if (key === "thumbnail" && value instanceof File) {
+        console.log(`key: ${key}, value: File { name: ${value.name}, size: ${value.size} }`);
+      } else {
+        console.log(`key: ${key}, value:`, value);
+      }
+    }
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key === "thumbnail" && value instanceof File) {
+        console.log(`key: ${key}, value: File { name: ${value.name}, size: ${value.size} }`);
+      } else {
+        console.log(`key: ${key}, value:`, value);
+      }
+    });
     const res = await recipesService.createRecipe(formData);
     return res.recipe; // Assuming res contains { recipe, message }
   }

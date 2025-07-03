@@ -22,14 +22,10 @@ interface RecipesResponse {
 
 export const recipesService = {
   createRecipe: async (data: RecipeData): Promise<RecipeResponse> => {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("instructions", data.instructions);
-    formData.append("ingredients", JSON.stringify(data.ingredients));
-    if (data.thumbnail) formData.append("thumbnail", data.thumbnail);
+   
 
     try {
-      const response = await api.post("/recipes", formData, {
+      const response = await api.post("/recipes", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       return response.data;
