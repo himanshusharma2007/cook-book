@@ -13,7 +13,7 @@ export class AuthController {
     async register(@Body() createUserDto: Partial<User>, @Res({ passthrough: true }) res: Response) {
         try {
             const { user, token } = await this.authService.register(createUserDto);
-            res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
+            res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none", });
             return { success: true, user: { id: user.id, name: user.name, email: user.email }, message: "User registered successfully" };
         } catch (error) {
             throw new BadRequestException(error.message);
@@ -25,7 +25,7 @@ export class AuthController {
     async login(@Body() loginDto: { email: string; password: string }, @Res({ passthrough: true }) res: Response) {
         try {
             const { user, token } = await this.authService.login(loginDto);
-            res.cookie("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production" });
+            res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none", });
             return { success: true, user: { id: user.id, name: user.name, email: user.email }, message: "Login successful" };
         } catch (error) {
             throw new UnauthorizedException(error.message);
