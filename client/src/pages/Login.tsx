@@ -25,9 +25,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white  flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
         <h1 className=" text-3xl merriweather font-bold text-center text-gray-800">Login</h1>
+        <h2 className=" text-xl dancing-script font-bold text-center text-red-800">Welcome to CookBook</h2>
         {error && <p className="text-red-500 text-center">{!error.includes("No token provided") && error }</p>}
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="relative">
@@ -53,7 +54,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
+            className="w-full bg-red-800 text-white py-3 rounded-xl hover:bg-red-700 transition-colors disabled:bg-red-400 disabled:cursor-not-allowed"
           >
             {loading ? "Logging in..." : "Login"}
           </button>

@@ -7,6 +7,7 @@ import { addFavorite, removeFavorite, getFavorites } from "../redux/slices/favor
 import { toast } from "react-toastify";
 import type { RootState } from "../redux/store";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -163,7 +164,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50">
       {/* Hero Section */}
-      <div className="relative h-96 md:h-[70vh] bg-gradient-to-r from-orange-600 to-red-600 overflow-hidden">
+      <div className="relative h-[70vh] bg-gradient-to-r from-orange-600 to-red-600 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-black bg-opacity-20"></div>
         <div 
@@ -185,9 +186,9 @@ const Home = () => {
           </div>
 
           {/* Search and Filter Section */}
-          <div className="w-full max-w-4xl mx-auto">
-            <div className="bg-white  shadow-2xl  backdrop-blur-sm bg-opacity-95">
-              <div className="flex flex-col md:flex-row gap-4 items-center">
+          <div className="w-full max-w-4xl mx-auto px-2 sm:px-4">
+            <div className="bg-white shadow-2xl backdrop-blur-sm bg-opacity-95 rounded-xl">
+              <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center p-3 md:p-0">
                 {/* Search Bar */}
                 <div className="flex-1 relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -196,22 +197,22 @@ const Home = () => {
                     placeholder="Search any recipe..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-12 pr-4 py-4 border border-gray-200 focus:outline-none  focus:border-transparent text-gray-700 placeholder-gray-400"
+                    className="w-full pl-12 pr-4 py-4 border border-gray-200 focus:outline-none focus:border-transparent text-gray-700 placeholder-gray-400 rounded-xl"
                   />
                 </div>
 
                 {/* Filter Dropdown */}
-                <div className="relative">
+                <div className="relative w-full md:w-auto">
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 min-w-[140px]"
+                    className="flex items-center justify-between gap-2 w-full md:w-auto px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 min-w-[140px]"
                   >
                     <span className="font-medium">{getCurrentFilterLabel()}</span>
                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
                   
                   {isDropdownOpen && (
-                    <div className="absolute  top-full left-0 mt-2 w-full bg-white  shadow-lg border border-gray-200 overflow-hidden z-50">
+                    <div className="absolute top-full left-0 mt-2 w-full bg-white shadow-lg border border-gray-200 overflow-hidden z-50 rounded-xl">
                       {getFilterOptions().map((option) => (
                         <button
                           key={option.value}
@@ -246,119 +247,81 @@ const Home = () => {
 
         {/* Loading State */}
         {loading && recipes.length === 0 && (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-          </div>
+        <Loader />
         )}
 
         {/* Recipe Grid */}
-        {recipes.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {recipes.map((recipe) => (
-              <div
-                key={recipe.id}
-                className="bg-white overflow-clip flex  flex-col justify-between  rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100"
-              >
-                {/* Recipe Image */}
-                <div className="relative">
-                  <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}${recipe.thumbnail}`}
-                    alt={recipe.name}
-                    className="w-full h-48 object-cover"
-                  />
-                  
-                  {/* Action Buttons */}
-                  <div className="absolute top-3 right-3 flex gap-2">
-                    {/* Favorite Button */}
-                    <button
-                      onClick={() => handleFavoriteToggle(recipe.id)}
-                      className={`p-2 rounded-full transition-all duration-200 ${
-                        isRecipeFavorite(recipe.id)
-                          ? "bg-red-500 text-white shadow-lg"
-                          : "bg-white text-gray-600 hover:bg-red-50 hover:text-red-500"
-                      }`}
-                    >
-                      <Heart
-                        className={`w-5 h-5 ${
-                          isRecipeFavorite(recipe.id) ? "fill-current" : ""
-                        }`}
-                      />
-                    </button>
-                    
-                    {/* Delete Button (only for My Recipes) */}
-                    {activeFilter === "my" && (
-                      <button
-                        onClick={() => handleDeleteRecipe(recipe.id)}
-                        className="p-2 rounded-full bg-white text-gray-600 hover:bg-red-50 hover:text-red-500 transition-all duration-200"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Recipe Info */}
-                <div className="p-4">
-                  <h3 className="text-lg text-nowrap font-semibold text-gray-800 mb-2 line-clamp-2">
-                    {recipe.name}
-                  </h3>
-                  
-                  {/* Recipe Stats */}
-                  <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <Users className="w-4 h-4" />
-                      {console.log('recipe', recipe)}
-                      <span>By {recipe?.user?.name?.split(" ")[0]}</span>
-                    </div>
-                  </div>
-
-                 {/* Action Button */}
-                  <button
-                    onClick={() => handleViewDetails(recipe.id)}
-                    className="w-full bg-gradient-to-r  from-orange-500 to-red-500 text-white py-3 rounded-xl font-medium hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105"
-                  >
-                    View Recipe
-                  </button>
-                </div>
-                 
-              </div>
-            ))}
-          </div>
-        ) : (
-          !loading && (
-            <div className="text-center py-20">
-              <ChefHat className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                No recipes found
-              </h3>
-              <p className="text-gray-500 mb-6">
-                {activeFilter === "my" 
-                  ? "You haven't created any recipes yet." 
-                  : "Try adjusting your search or filters."
-                }
-              </p>
-              {activeFilter === "my" && (
-                <button onClick={()=> navigate("/recipe-creator")} className="bg-orange-500 text-white px-6 py-3 rounded-xl font-medium hover:bg-orange-600 transition-colors">
-                  <Plus className="w-5 h-5 inline mr-2" />
-                  Create Your First Recipe
-                </button>
-              )}
-            </div>
-          )
-        )}
-
-        {/* Load More Button */}
-        {recipes.length > 0 && recipes.length < total && (
-          <div className="text-center mt-12">
-            <button
-              onClick={handleLoadMore}
-              disabled={loading}
-              className="bg-white text-orange-500 border-2 border-orange-500 px-8 py-3 rounded-xl font-medium hover:bg-orange-500 hover:text-white transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {recipes.map((recipe) => (
+            <div
+              key={recipe.id}
+              className="bg-white overflow-clip flex flex-col justify-between rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100"
             >
-              {loading ? "Loading..." : "Load More Recipes"}
-            </button>
-          </div>
-        )}
+              {/* Recipe Image */}
+              <div className="relative">
+                <img
+                  src={`${import.meta.env.VITE_BACKEND_URL}${recipe.thumbnail}`}
+                  alt={recipe.name}
+                  className="w-full h-48 object-cover"
+                />
+                
+                {/* Action Buttons */}
+                <div className="absolute top-3 right-3 flex gap-2">
+                  {/* Favorite Button */}
+                  <button
+                    onClick={() => handleFavoriteToggle(recipe.id)}
+                    className={`p-2 rounded-full transition-all duration-200 ${
+                      isRecipeFavorite(recipe.id)
+                        ? "bg-red-500 text-white shadow-lg"
+                        : "bg-white text-gray-600 hover:bg-red-50 hover:text-red-500"
+                    }`}
+                  >
+                    <Heart
+                      className={`w-5 h-5 ${
+                        isRecipeFavorite(recipe.id) ? "fill-current" : ""
+                      }`}
+                    />
+                  </button>
+                  
+                  {/* Delete Button (only for My Recipes) */}
+                  {activeFilter === "my" && (
+                    <button
+                      onClick={() => handleDeleteRecipe(recipe.id)}
+                      className="p-2 rounded-full bg-white text-gray-600 hover:bg-red-50 hover:text-red-500 transition-all duration-200"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Recipe Info */}
+              <div className="p-4">
+                <h3 className="text-lg text-nowrap font-semibold text-gray-800 mb-2 line-clamp-2">
+                  {recipe.name}
+                </h3>
+                
+                {/* Recipe Stats */}
+                <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <Users className="w-4 h-4" />
+                    {console.log('recipe', recipe)}
+                    <span>By {recipe?.user?.name?.split(" ")[0]}</span>
+                  </div>
+                </div>
+
+               {/* Action Button */}
+                <button
+                  onClick={() => handleViewDetails(recipe.id)}
+                  className="w-full bg-gradient-to-r  from-orange-500 to-red-500 text-white py-3 rounded-xl font-medium hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105"
+                >
+                  View Recipe
+                </button>
+              </div>
+               
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

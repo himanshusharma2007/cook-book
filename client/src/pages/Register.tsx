@@ -26,9 +26,11 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
         <h1 className=" text-3xl merriweather font-bold text-center text-gray-800">Register</h1>
+        <h2 className=" text-xl dancing-script font-bold text-center text-red-800">Welcome to CookBook</h2>
+
              {error && <p className="text-red-500 text-center">{!error.includes("No token provided") && error }</p>}
         <form onSubmit={handleRegister} className="space-y-6">
           <div className="relative">
@@ -38,7 +40,7 @@ const Register = () => {
               placeholder="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
             />
           </div>
           <div className="relative">
@@ -48,7 +50,7 @@ const Register = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
             />
           </div>
           <div className="relative">
@@ -58,20 +60,20 @@ const Register = () => {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 transition-colors disabled:bg-green-400 disabled:cursor-not-allowed"
+            className="w-full bg-red-800 text-white py-3 rounded-xl hover:bg-red-700 transition-colors disabled:bg-red-400 disabled:cursor-not-allowed"
           >
             {loading ? "Registering..." : "Register"}
           </button>
         </form>
         <p className="text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <a href="/login" className="text-green-600 hover:underline">
+          <a href="/login" className="text-red-600 hover:underline">
             Login
           </a>
         </p>

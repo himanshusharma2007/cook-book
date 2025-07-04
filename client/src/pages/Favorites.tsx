@@ -6,6 +6,7 @@ import type { RootState } from "../redux/store";
 import { toast } from "react-toastify";
 import { FaHeart, FaTrash } from "react-icons/fa";
 import { Trash2 } from "lucide-react";
+import Loader from "../components/Loader";
 
 const Favorites = () => {
   const dispatch = useDispatch();
@@ -36,8 +37,11 @@ const Favorites = () => {
       }
     }
   };
-
-  if (loading) return <div className="text-center py-20 text-gray-600">Loading...</div>;
+  const handleViewDetails = (recipeId: number) => {
+    // Navigate to recipe details page
+    window.location.href = `/recipe/${recipeId}`;
+  };
+  if (loading) return <Loader />;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 pt-20">
@@ -70,14 +74,19 @@ const Favorites = () => {
                     {recipe.name}
                   </h3>
                   <p className="text-sm text-gray-600 mb-4">By: {recipe.postedBy}</p>
-                  <div className="mt-auto flex justify-between gap-2">
+                  <div className="mt-auto flex flex-col justify-between gap-2">
                     <button
                       onClick={() => handleUnfavorite(recipe.id)}
                       className="flex-1 bg-red-500 text-white py-2 rounded-xl font-medium hover:bg-red-600 transition-all duration-200"
                     >
                       <FaHeart className="inline mr-2" /> Remove Favorite
                     </button>
-
+                    <button
+                      onClick={() => handleViewDetails(recipe.id)}
+                      className="w-full bg-gradient-to-r  from-orange-500 to-red-500 text-white py-3 rounded-xl font-medium hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105"
+                    >
+                      View Recipe
+                    </button>
                   </div>
                 </div>
               </div>

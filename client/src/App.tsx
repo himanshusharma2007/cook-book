@@ -8,6 +8,7 @@ import Favorites from "./pages/Favorites";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { getMe } from "./redux/slices/authSlice";
+import RecipeDetails from "./pages/RecipeDetails";
 
 const App = () => {
   const dispatch = useDispatch()
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="recipe-creator" element={<RecipeCreator />} />
+          <Route path="recipe/:id" element={<RecipeDetails />} />
           <Route path="favorites" element={<Favorites />} />
         </Route>
       </Routes>

@@ -103,4 +103,23 @@ export class RecipesController {
             throw new NotFoundException(error.message);
         }
     }
+
+    @Get(":id")
+    @UseGuards(AuthGuard)
+    @HttpCode(HttpStatus.OK)
+    async getById(@Param("id") id: string, @Req() req: Request) {
+        try {
+            if (!req.user) {
+                throw new UnauthorizedException("Unauthorized");
+            }
+            const recipe = await this.recipesService.findById(parseInt(id));
+            if (!recipe) {
+                throw new NotFoundException("Recipe not found");
+            }
+            return { success: true, recipe };
+        } catch (error) {
+            if (error instanceof UnauthorizedException || error instanceof NotFoundException) throw error;
+            throw new InternalServerErrorException(error.message);
+        }
+    }
 }

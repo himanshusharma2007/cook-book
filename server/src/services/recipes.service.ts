@@ -48,6 +48,10 @@ export class RecipesService {
     return recipe;
   }
 
+  async findById(id: number): Promise<Recipe | null> {
+    return await Recipe.findOne({ where: { id } , include: [User] });
+  }
+
   async deleteRecipe(id: number, userId: number): Promise<void> {
     const recipe = await Recipe.findByPk(id);
     if (!recipe) throw new NotFoundException("Recipe not found");

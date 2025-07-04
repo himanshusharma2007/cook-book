@@ -62,4 +62,13 @@ export const recipesService = {
       throw new Error(error.response?.data?.message || "Failed to delete recipe");
     }
   },
+
+  getRecipeById: async (id: number): Promise<{ recipe: { id: number; name: string; postedBy: number } }> => {
+    try {
+      const response = await api.get(`/recipes/${id}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || "Failed to fetch recipe");
+    }
+  },
 };

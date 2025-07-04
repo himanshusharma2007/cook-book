@@ -67,6 +67,14 @@ export const deleteRecipe = createAsyncThunk(
   }
 );
 
+export const getRecipeById = createAsyncThunk(
+  "recipes/getRecipeById",
+  async (id: number, thunkAPI) => {
+    const res = await recipesService.getRecipeById(id);
+    return res.recipe; // Assuming res contains { success, recipe }
+  }
+);
+
 const recipesSlice = createSlice({
   name: "recipes",
   initialState,
@@ -146,6 +154,24 @@ const recipesSlice = createSlice({
       .addCase(deleteRecipe.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to delete recipe";
+      })
+      .addCase(getRecipeById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getRecipeById.fulfilled, (state, action: PayloadAction<{ id: number; name: string; postedBy: number }>) => {
+        state.loading = false;
+        // Optionally add or update the recipe in the state
+        const index = state.recipes.findIndex(r => r.id === action.payload.id);
+        if (index !== -1) {
+          state.recipes[index] = action.payload;
+        } else {
+          state.recipes.push(action.payload);
+        }
+      })
+      .addCase(getRecipeById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch recipe";
       });
   },
 });
