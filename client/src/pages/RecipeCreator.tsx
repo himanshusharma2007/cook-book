@@ -107,11 +107,16 @@ const RecipeCreator = () => {
 
   // Utility function to convert image URL to File object
   const urlToFile = async (imageUrl: string, filename: string = 'image.jpg'): Promise<File> => {
-    const response = await fetch(imageUrl);
+    // Upgrade http to https if needed
+    const safeUrl = imageUrl.startsWith('http://')
+      ? imageUrl.replace('http://', 'https://')
+      : imageUrl;
+
+    const response = await fetch(safeUrl);
     const blob = await response.blob();
-    const file = new File([blob], filename, { type: blob.type });
-    return file;
+    return new File([blob], filename, { type: blob.type });
   };
+
 
   // Handle recipe selection from suggestions
   const handleRecipeSelect = async (selectedRecipe: ForkifyRecipe) => {
