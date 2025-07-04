@@ -8,10 +8,10 @@ const Layout = () => {
     <div className=" bg-gray-100">
       <ToastContainer />
       <Header />
-      <main className="- min-h-[calc(100vh-64px)] ">
+      <main className="- min-h-[calc(100vh-64px)] quicksand ">
         <Outlet />
       </main>
-      <footer className="bg-orange-700 text-white text-center p-4 ">
+      <footer className="bg-red-800 text-white text-center p-4 ">
         <p>&copy; 2025 CookBook. All rights reserved.</p>
       </footer>
     </div>

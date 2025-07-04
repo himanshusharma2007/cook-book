@@ -309,14 +309,14 @@ const RecipeCreator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 p-4 pt-20">
       <div className="max-w-4xl mx-auto py-8">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full mb-4">
-            <FaUtensils className="text-white text-2xl" />
+            <FaUtensils className="text-white  text-2xl merriweather" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Create New Recipe</h1>
+          <h1 className=" text-4xl merriweather font-bold text-gray-800 mb-2">Create New Recipe</h1>
           <p className="text-gray-600">Share your culinary masterpiece with the world</p>
         </div>
 
@@ -333,7 +333,7 @@ const RecipeCreator = () => {
             <div className="space-y-6">
               {/* Recipe Name with Suggestions */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <label className="flex items-center text-lg font-semibold text-gray-700 mb-4">
+                <label className="flex items-center  text-lg merriweather font-semibold text-gray-700 mb-4">
                   <FaFileAlt className="mr-2 text-orange-500" />
                   Recipe Name
                 </label>
@@ -344,7 +344,7 @@ const RecipeCreator = () => {
                       placeholder="Enter a recipe name (e.g., 'pizza', 'pasta')..."
                       value={recipe.name}
                       onChange={(e) => handleNameChange(e.target.value)}
-                      className="w-full p-4 pr-12 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 text-lg"
+                      className="w-full p-4 pr-12 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200  text-lg merriweather"
                       disabled={fetchingRecipe}
                     />
                     {searchLoading && (
@@ -404,7 +404,7 @@ const RecipeCreator = () => {
               </div>
               {/* Image Upload */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <label className="flex items-center text-lg font-semibold text-gray-700 mb-4">
+                <label className="flex items-center  text-lg merriweather font-semibold text-gray-700 mb-4">
                   <FaImage className="mr-2 text-orange-500" />
                   Recipe Image
                   {selectedRecipeId && isImageFromAPI && (
@@ -444,7 +444,7 @@ const RecipeCreator = () => {
                     </div>
                   ) : (
                     <div className="py-8">
-                      <BiUpload className="text-4xl text-gray-400 mb-4 mx-auto" />
+                      <BiUpload className=" text-4xl merriweather text-gray-400 mb-4 mx-auto" />
                       <p className="text-gray-600 mb-2">Drop your image here or click to browse</p>
                       <p className="text-gray-400 text-sm">PNG, JPG, GIF up to 10MB</p>
                     </div>
@@ -464,7 +464,7 @@ const RecipeCreator = () => {
             <div className="space-y-6">
               {/* Ingredients */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <label className="flex items-center text-lg font-semibold text-gray-700 mb-4">
+                <label className="flex items-center  text-lg merriweather font-semibold text-gray-700 mb-4">
                   <FaList className="mr-2 text-orange-500" />
                   Ingredients
                   {selectedRecipeId && (
@@ -513,7 +513,7 @@ const RecipeCreator = () => {
 
           {/* Instructions */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <label className="flex items-center text-lg font-semibold text-gray-700 mb-4">
+            <label className="flex items-center  text-lg merriweather font-semibold text-gray-700 mb-4">
               <FaFileAlt className="mr-2 text-orange-500" />
               Instructions
               {selectedRecipeId && (

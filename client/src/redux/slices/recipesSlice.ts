@@ -98,7 +98,20 @@ const recipesSlice = createSlice({
       })
       .addCase(getRecipes.fulfilled, (state, action: PayloadAction<{ recipes: { id: number; name: string; postedBy: number }[]; total: number; page: number; limit: number }>) => {
         state.loading = false;
-        state.recipes = action.payload.recipes;
+        if (state.page !== action.payload.page && state.recipes.length > 0) {
+          // Merge previous recipes with new ones (avoid duplicates by id)
+          const existingIds = new Set(state.recipes.map(r => r.id));
+          const merged = [...state.recipes];
+          action.payload.recipes.forEach(recipe => {
+            if (!existingIds.has(recipe.id)) {
+              merged.push(recipe);
+            }
+          });
+          state.recipes = merged;
+        } else {
+          // Replace recipes if same page or no previous recipes
+          state.recipes = action.payload.recipes;
+        }
         state.total = action.payload.total;
         state.page = action.payload.page;
         state.limit = action.payload.limit;

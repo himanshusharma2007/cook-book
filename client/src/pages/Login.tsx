@@ -27,8 +27,8 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
-        <h1 className="text-3xl font-bold text-center text-gray-800">Login</h1>
-        {error && <p className="text-red-500 text-center">{error}</p>}
+        <h1 className=" text-3xl merriweather font-bold text-center text-gray-800">Login</h1>
+        {error && <p className="text-red-500 text-center">{!error.includes("No token provided") && error }</p>}
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="relative">
             <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />

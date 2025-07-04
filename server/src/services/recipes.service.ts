@@ -37,6 +37,7 @@ export class RecipesService {
       offset,
       limit,
       order: [["postedAt", "DESC"]],
+      include: [User],
     });
     return { recipes: rows, total: count };
   }
@@ -50,7 +51,9 @@ export class RecipesService {
   async deleteRecipe(id: number, userId: number): Promise<void> {
     const recipe = await Recipe.findByPk(id);
     if (!recipe) throw new NotFoundException("Recipe not found");
-    if (recipe.postedBy !== userId) throw new UnauthorizedException("You can only delete your own recipes");
+    console.log('recipe.postedBy', recipe.dataValues.postedBy)
+    console.log('userId', userId)
+    if (recipe.dataValues.postedBy !== userId) throw new UnauthorizedException("You can only delete your own recipes");
     await recipe.destroy();
   }
 
