@@ -51,7 +51,11 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     async logout(@Res({ passthrough: true }) res: Response) {
         try {
-            res.clearCookie("token");
+            res.clearCookie("token", {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none'
+            });
             return { success: true, message: "Logged out successfully" };
         } catch (error) {
             throw new InternalServerErrorException("Logout failed");
