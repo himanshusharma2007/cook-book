@@ -324,8 +324,11 @@ const Home = () => {
         </div>
 
         {/* Load More Button */}
+        {console.log('total', total)}
         {recipes.length < total && (
-          <div className="flex justify-center mt-8">
+          <div className="flex space-x-2 items-center justify-center mt-8">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+
             <button
               onClick={handleLoadMore}
               className="px-8 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold shadow hover:from-orange-600 hover:to-red-600 transition-all duration-200"

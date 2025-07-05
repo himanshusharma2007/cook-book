@@ -150,6 +150,7 @@ const recipesSlice = createSlice({
       .addCase(deleteRecipe.fulfilled, (state, action: PayloadAction<number>) => {
         state.loading = false;
         state.recipes = state.recipes.filter((recipe) => recipe.id !== action.payload);
+        state.total -= 1;
       })
       .addCase(deleteRecipe.rejected, (state, action) => {
         state.loading = false;
