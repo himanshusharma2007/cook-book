@@ -215,7 +215,7 @@ const RecipeDetails = () => {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
             <div className="relative">
               <img
-                src={`${import.meta.env.VITE_BACKEND_URL}${recipe.thumbnail}`}
+                src={recipe.thumbnail}
                 alt={recipe.name}
                 className="w-full h-64 md:h-96 object-cover"
               />

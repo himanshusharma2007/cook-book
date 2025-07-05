@@ -36,4 +36,8 @@ async findAll(userId: number): Promise<Recipe[]> {
     if (!favorite) throw new NotFoundException("Favorite not found");
     await favorite.destroy();
   }
+
+  async removeAllFavoritesForRecipe(recipeId: number): Promise<void> {
+    await Favorite.destroy({ where: { recipeId } });
+  }
 }

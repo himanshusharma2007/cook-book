@@ -260,7 +260,7 @@ const Home = () => {
               {/* Recipe Image */}
               <div className="relative">
                 <img
-                  src={`${import.meta.env.VITE_BACKEND_URL}${recipe.thumbnail}`}
+                  src={recipe.thumbnail}
                   alt={recipe.name}
                   className="w-full h-48 object-cover"
                 />
@@ -322,6 +322,19 @@ const Home = () => {
             </div>
           ))}
         </div>
+
+        {/* Load More Button */}
+        {recipes.length < total && (
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={handleLoadMore}
+              className="px-8 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold shadow hover:from-orange-600 hover:to-red-600 transition-all duration-200"
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Load More"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

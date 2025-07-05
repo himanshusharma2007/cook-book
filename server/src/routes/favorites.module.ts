@@ -10,5 +10,6 @@ import { User } from "../models/user.model";
   imports: [SequelizeModule.forFeature([Favorite, Recipe, User])],
   controllers: [FavoritesController],
   providers: [FavoritesService],
+   exports: [FavoritesService],
 })
 export class FavoritesModule {}

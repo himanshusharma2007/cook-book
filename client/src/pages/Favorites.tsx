@@ -65,7 +65,7 @@ const Favorites = () => {
                   )}
                 </div> */}
                 <img
-                  src={`${import.meta.env.VITE_BACKEND_URL}${recipe.thumbnail}`}
+                  src={recipe.thumbnail}
                   alt={recipe.name}
                   className="w-full h-48 object-cover rounded-t-2xl"
                 />
