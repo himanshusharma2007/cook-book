@@ -1,0 +1,22 @@
+# Node modules
+**/node_modules/
+**/dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# dotenv files
+.env
+.env.*  # for env variants
+
+# Docker stuff
+**/.dockerignore
+**/Dockerfile
+
+# Build files
+**/build/
+
+# OS-specific
+.DS_Store
+Thumbs.db
