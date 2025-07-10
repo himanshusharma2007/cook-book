@@ -8,12 +8,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { User } from '../user/entities/user.model';
 
 @Module({
-  imports: [
-    SequelizeModule.forFeature([User]),
-    PassportModule,
-  ],
+  imports: [SequelizeModule.forFeature([User]), PassportModule],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
-  
 })
 export class AuthModule {}

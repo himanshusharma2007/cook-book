@@ -1,6 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
+import { Injectable } from '@nestjs/common';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage, Params } from 'multer-storage-cloudinary';
+import { Request } from 'express';
 
 @Injectable()
 export class CloudinaryUtils {
@@ -14,18 +15,19 @@ export class CloudinaryUtils {
 
   getStorage() {
     return new CloudinaryStorage({
-      cloudinary: cloudinary,
+      cloudinary,
       params: {
         folder: 'recipes',
-        format: async (req, file) => 'png', // supports promises as well
-        public_id: (req, file) => file.originalname,
-      } as any, // Type assertion to bypass the folder property issue
+        format: () => 'png', // no need for async here
+        public_id: (_req: Request, file: Express.Multer.File): string => {
+          return file.originalname.split('.')[0]; // safer access
+        },
+      } as Params,
     });
   }
 
-  async deleteImage(imageUrl: string) {
+  async deleteImage(imageUrl: string): Promise<void> {
     try {
-      // Extract public_id from Cloudinary URL
       const publicId = this.extractPublicId(imageUrl);
       if (publicId) {
         await cloudinary.uploader.destroy(publicId);
@@ -40,7 +42,7 @@ export class CloudinaryUtils {
     try {
       const segments = url.split('/');
       const lastSegment = segments[segments.length - 1];
-      return lastSegment.split('.')[0]; // Remove file extension
+      return lastSegment.split('.')[0];
     } catch (error) {
       console.error('Error extracting public ID:', error);
       return null;

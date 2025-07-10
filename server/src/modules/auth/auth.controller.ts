@@ -11,7 +11,6 @@ import {
   BadRequestException,
   UnauthorizedException,
   NotFoundException,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
@@ -25,13 +24,17 @@ import { LoginDto } from './dto/login.dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  /**
+   * Registers a new user and sets JWT cookie.
+   * @param createUserDto - User details.
+   * @param res - Response object for setting cookie.
+   * @returns User details (id, name, email).
+   * @throws BadRequestException on registration error.
+   */
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @LogExecution()
-  async register(
-    @Body() createUserDto: CreateUserDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async register(@Body() createUserDto: CreateUserDto, @Res({ passthrough: true }) res: Response) {
     try {
       const { user, token } = await this.authService.register(createUserDto);
 
@@ -49,14 +52,18 @@ export class AuthController {
     }
   }
 
+  /**
+   * Logs in user and sets JWT cookie.
+   * @param loginDto - Login credentials.
+   * @param res - Response object for setting cookie.
+   * @returns User details (id, name, email).
+   * @throws UnauthorizedException on login failure.
+   */
   @UseGuards(AuthGuard('local'))
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @LogExecution()
-  async login(
-    @Body() loginDto: LoginDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
     try {
       const { user, token } = await this.authService.login(loginDto);
 
@@ -74,6 +81,14 @@ export class AuthController {
     }
   }
 
+  /**
+   * Fetches authenticated user's details.
+   * @param req - Request object with user data.
+   * @param res - Response object for metadata.
+   * @returns User details.
+   * @throws UnauthorizedException if not authenticated.
+   * @throws NotFoundException if user not found.
+   */
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
@@ -93,22 +108,21 @@ export class AuthController {
     }
   }
 
+  /**
+   * Logs out user by clearing JWT cookie.
+   * @param res - Response object for clearing cookie.
+   */
   @Post('logout')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.OK)
   @LogExecution()
-  async logout(@Res({ passthrough: true }) res: Response) {
-    try {
-      res.clearCookie('token', {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-      });
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
 
-      setResponseMeta(res, 'message', 'Logged out successfully');
-      return;
-    } catch (error) {
-      throw new InternalServerErrorException('Logout failed');
-    }
+    setResponseMeta(res, 'message', 'Logged out successfully');
   }
 }
