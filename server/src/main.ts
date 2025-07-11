@@ -1,18 +1,29 @@
+console.log('=== STARTING BOOTSTRAP ===');
+
 import { NestFactory } from '@nestjs/core';
+console.log('=== NESTJS IMPORTED ===');
+
 import { AppModule } from './app.module';
-import * as cookieParser from 'cookie-parser';
-import { NestExpressApplication } from '@nestjs/platform-express';
+console.log('=== APP MODULE IMPORTED ===');
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.use(cookieParser());
-  app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:3000', 'https://cookbook-topaz.vercel.app'], // your frontend URL
-    credentials: true,
-  });
-
-  await app.listen(process.env.PORT || 5000, () => {
-    console.log(`Server is running on port ${process.env.PORT || 5000}`);
-  });
+  console.log('=== BOOTSTRAP FUNCTION CALLED ===');
+  
+  try {
+    console.log('=== CREATING NEST APP ===');
+    const app = await NestFactory.create(AppModule);
+    console.log('=== NEST APP CREATED ===');
+    
+    await app.listen(3000);
+    console.log('=== SERVER STARTED ON PORT 3000 ===');
+  } catch (error) {
+    console.error('=== BOOTSTRAP ERROR ===', error);
+    process.exit(1);
+  }
 }
-void bootstrap();
+
+console.log('=== CALLING BOOTSTRAP ===');
+bootstrap().catch(error => {
+  console.error('=== BOOTSTRAP CATCH ===', error);
+  process.exit(1);
+});

@@ -4,8 +4,9 @@ export function LogExecution(): MethodDecorator {
   return (
     target: object,
     propertyKey: string | symbol,
-    descriptor: TypedPropertyDescriptor<(...args: unknown[]) => Promise<unknown>>
-  ): void => {
+     
+    descriptor: TypedPropertyDescriptor<any> 
+  ): any => { 
     const originalMethod = descriptor.value;
 
     if (!originalMethod) return;
@@ -21,5 +22,7 @@ export function LogExecution(): MethodDecorator {
 
       return result;
     };
+
+    return descriptor;
   };
 }

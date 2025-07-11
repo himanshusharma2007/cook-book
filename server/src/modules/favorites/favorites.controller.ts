@@ -18,12 +18,14 @@ import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { setResponseMeta } from 'src/utils/response.utils';
 import { LogExecution } from 'src/common/decorators/log.decorator';
+import { getUserId } from 'src/utils/auth.utils';
 
 /**
  * Controller for managing user favorite recipes.
  */
 @Controller('favorites')
 export class FavoritesController {
+ 
   constructor(private favoritesService: FavoritesService) {}
 
   /**
@@ -50,12 +52,12 @@ export class FavoritesController {
       const recipeId = parseInt(id, 10);
       if (isNaN(recipeId)) throw new BadRequestException('Invalid recipe ID');
 
-      const favorite = await this.favoritesService.addFavorite(recipeId, req.user.id);
+      const favorite = await this.favoritesService.addFavorite(recipeId, getUserId(req));
 
       setResponseMeta(res, 'favoriteId', 'Recipe added to favorites');
 
       return favorite.id;
-    } catch (error) {
+    } catch (error : any) {
       if (error instanceof UnauthorizedException) throw error;
       throw new BadRequestException(error.message);
     }
@@ -77,12 +79,12 @@ export class FavoritesController {
     try {
       if (!req.user) throw new UnauthorizedException('Unauthorized');
 
-      const recipes = await this.favoritesService.findAll(req.user.id);
+      const recipes = await this.favoritesService.findAll(getUserId(req));
 
       setResponseMeta(res, 'recipes', 'Favorites fetched successfully');
 
       return recipes;
-    } catch (error) {
+    } catch (error : any) {
       if (error instanceof UnauthorizedException) throw error;
       throw new BadRequestException(error.message);
     }
@@ -111,12 +113,13 @@ export class FavoritesController {
       const recipeId = parseInt(id, 10);
       if (isNaN(recipeId)) throw new BadRequestException('Invalid recipe ID');
 
-      await this.favoritesService.removeFavorite(recipeId, req.user.id);
+       
+      await this.favoritesService.removeFavorite(recipeId, getUserId(req));
 
       setResponseMeta(res, 'message', 'Recipe removed from favorites');
 
       return null;
-    } catch (error) {
+    } catch (error : any) {
       if (error instanceof UnauthorizedException || error instanceof NotFoundException) throw error;
       throw new BadRequestException(error.message);
     }

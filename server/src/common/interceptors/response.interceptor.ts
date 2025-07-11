@@ -19,7 +19,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, StandardRespon
     return next.handle().pipe(
       map((data: T) => {
         if (data && typeof data === 'object' && 'success' in data)
-          return data as StandardResponse<T>;
+          return data as unknown as StandardResponse<T>;
 
         return {
           success: true,

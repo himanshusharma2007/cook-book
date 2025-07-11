@@ -1,10 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from '../user/entities/user.model';
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import { sign, SignOptions } from 'jsonwebtoken';
+import  * as dotenv from 'dotenv';
 import { comparePassword, hashPassword } from 'src/utils/hash';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
+import { JwtPayload } from './types/jwt-payload';
 
 dotenv.config();
 
@@ -26,10 +27,22 @@ export class AuthService {
     const hashedPassword = await hashPassword(password);
     const user = await User.create({ name, email, password: hashedPassword });
 
-    const token = jwt.sign(
+    const jwtSecret = process.env.JWT_SECRET;
+    const jwtExpiresIn = process.env.JWT_EXPIRES_IN;
+
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET is not defined in environment variables');
+    }
+
+    const signOptions: SignOptions = {
+      expiresIn: (jwtExpiresIn || '1h') as any,
+    };
+    
+
+    const token = sign(
       { id: user.id, email: user.email } as JwtPayload,
-      process.env.JWT_SECRET as string,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      jwtSecret,
+      signOptions
     );
 
     return { user, token };
@@ -50,10 +63,22 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const token = jwt.sign(
+    const jwtSecret = process.env.JWT_SECRET;
+    const jwtExpiresIn = process.env.JWT_EXPIRES_IN;
+
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET is not defined in environment variables');
+    }
+
+    const signOptions: SignOptions = {
+      expiresIn: (jwtExpiresIn || '1h') as any,
+    };
+    
+
+    const token = sign(
       { id: user.id, email: user.email } as JwtPayload,
-      process.env.JWT_SECRET as string,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      jwtSecret,
+      signOptions
     );
 
     return { user, token };

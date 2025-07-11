@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryStorage, Params } from 'multer-storage-cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import { Request } from 'express';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class CloudinaryUtils {
         public_id: (_req: Request, file: Express.Multer.File): string => {
           return file.originalname.split('.')[0]; // safer access
         },
-      } as Params,
+      } as any,
     });
   }
 
@@ -32,7 +32,7 @@ export class CloudinaryUtils {
       if (publicId) {
         await cloudinary.uploader.destroy(publicId);
       }
-    } catch (error) {
+    } catch (error : any) {
       console.error('Error deleting image from Cloudinary:', error);
       throw error;
     }
@@ -43,7 +43,7 @@ export class CloudinaryUtils {
       const segments = url.split('/');
       const lastSegment = segments[segments.length - 1];
       return lastSegment.split('.')[0];
-    } catch (error) {
+    } catch (error : any) {
       console.error('Error extracting public ID:', error);
       return null;
     }

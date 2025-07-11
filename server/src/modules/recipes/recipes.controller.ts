@@ -27,9 +27,11 @@ import { CloudinaryUtils } from '../../utils/cloudinary.utils';
 import { FavoritesService } from '../favorites/favorites.service';
 import { setResponseMeta } from 'src/utils/response.utils';
 import { LogExecution } from 'src/common/decorators/log.decorator';
+import { getUserId } from 'src/utils/auth.utils';
 
 @Controller('recipes')
 export class RecipesController {
+
   constructor(
     private recipesService: RecipesService,
     private cloudinaryUtils: CloudinaryUtils,
@@ -70,7 +72,7 @@ export class RecipesController {
         thumbnail: file?.path ?? undefined,
       };
 
-      const recipe = await this.recipesService.createRecipe(recipeDto, req.user.id);
+      const recipe = await this.recipesService.createRecipe(recipeDto, getUserId(req));
 
       setResponseMeta(res, 'recipe', 'Recipe created successfully');
 
@@ -79,7 +81,7 @@ export class RecipesController {
         name: recipe.name,
         postedBy: recipe.postedBy,
       };
-    } catch (error) {
+    } catch (error : any) {
       if (error instanceof UnauthorizedException) throw error;
       throw new BadRequestException(error.message);
     }
@@ -113,7 +115,7 @@ export class RecipesController {
       setResponseMeta(res, 'recipes', 'Recipes fetched successfully');
 
       return { recipes, total, page: pageNum, limit: limitNum };
-    } catch (error) {
+    } catch (error : any) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -145,7 +147,7 @@ export class RecipesController {
       const limitNum = parseInt(limit ?? '10');
 
       const { recipes, total } = await this.recipesService.findByUser(
-        req.user.id,
+        getUserId(req),
         pageNum,
         limitNum
       );
@@ -153,7 +155,7 @@ export class RecipesController {
       setResponseMeta(res, 'recipes', 'User recipes fetched successfully');
 
       return { recipes, total, page: pageNum, limit: limitNum };
-    } catch (error) {
+    } catch (error : any) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -185,12 +187,13 @@ export class RecipesController {
       await this.favoritesService.removeAllFavoritesForRecipe(+id);
       if (recipe.thumbnail) await this.cloudinaryUtils.deleteImage(recipe.thumbnail);
 
-      await this.recipesService.deleteRecipe(+id, req.user.id);
+       
+      await this.recipesService.deleteRecipe(+id, getUserId(req));
 
       setResponseMeta(res, 'message', 'Recipe deleted successfully');
 
       return;
-    } catch (error) {
+    } catch (error : any) {
       if (error instanceof UnauthorizedException || error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException(error.message);
     }
@@ -223,7 +226,7 @@ export class RecipesController {
       setResponseMeta(res, 'recipe', 'Recipe fetched successfully');
 
       return recipe;
-    } catch (error) {
+    } catch (error : any) {
       if (error instanceof UnauthorizedException || error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException(error.message);
     }

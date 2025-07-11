@@ -30,7 +30,7 @@ export class DatabaseConfig implements SequelizeOptionsFactory {
       await testSequelize.authenticate();
       console.log('✅ Database connected successfully');
       await testSequelize.close();
-    } catch (err) {
+    } catch (err : any) {
       console.error('❌ Database connection failed:', err.message);
     }
 
