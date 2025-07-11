@@ -31,6 +31,7 @@ import { getUserId } from 'src/utils/auth.utils';
 
 @Controller('recipes')
 export class RecipesController {
+  
 
   constructor(
     private recipesService: RecipesService,
@@ -107,6 +108,7 @@ export class RecipesController {
     @Query('limit') limit?: string
   ) {
     try {
+      console.log("search, page, limit", search, page, limit);
       const pageNum = parseInt(page ?? '1');
       const limitNum = parseInt(limit ?? '10');
 

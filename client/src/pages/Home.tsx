@@ -31,12 +31,13 @@ const Home = () => {
 
   // Initialize data on component mount
   useEffect(() => {
+    console.log("Initializing Home component");
     dispatch(getRecipes({ search: "", page: 1, limit: 8 }));
     
     if (user) {
       dispatch(getFavorites());
     }
-  }, [dispatch, user]);
+  }, [dispatch]);
 
   // Handle search with debounce
   useEffect(() => {

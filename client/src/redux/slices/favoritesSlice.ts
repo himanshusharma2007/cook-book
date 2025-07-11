@@ -25,7 +25,7 @@ export const getFavorites = createAsyncThunk(
   "favorites/getFavorites",
   async (_, thunkAPI) => {
     const res = await favoritesService.getFavorites();
-    return res.recipes;
+    return res;
   }
 );
 

@@ -20,7 +20,7 @@ export const registerUser = createAsyncThunk(
   async (formData: { name: string; email: string; password: string }, thunkAPI) => {
     try {
       const res = await authService.register(formData);
-      return res.user; // Assuming res contains { user, message }
+      return res; // Assuming res contains { user, message }
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || "Registration failed");
     }
@@ -31,8 +31,9 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (formData: { email: string; password: string }, thunkAPI) => {
     try {
-      const res = await authService.login(formData); // ✅ Cookie is set
-      return res.user;
+      const res = await authService.login(formData); 
+      console.log('res', res)// ✅ Cookie is set
+      return res;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || "Login failed");
     }
@@ -42,7 +43,7 @@ export const loginUser = createAsyncThunk(
 export const getMe = createAsyncThunk("auth/getMe", async (_, thunkAPI) => {
   try {
     const res = await authService.getMe();
-    return res.user;
+    return res;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response?.data?.message || "Failed to fetch user");
   }
@@ -51,7 +52,7 @@ export const getMe = createAsyncThunk("auth/getMe", async (_, thunkAPI) => {
 export const logoutUser = createAsyncThunk("auth/logoutUser", async (_, thunkAPI) => {
   try {
     const res = await authService.logout();
-    return res.message;
+    return res;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response?.data?.message || "Logout failed");
   }
@@ -92,6 +93,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<{ id: number; name: string; email: string }>) => {
+        console.log(' state.user = action.payload;',action.payload)
         state.loading = false;
         state.user = action.payload;
         state.isInitialized = true;
@@ -106,6 +108,7 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(getMe.fulfilled, (state, action: PayloadAction<{ id: number; name: string; email: string }>) => {
+        console.log(' action.payload',  action.payload)
         state.loading = false;
         state.user = action.payload;
         state.isInitialized = true;

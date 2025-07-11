@@ -23,9 +23,9 @@ export class AuthService {
     if (!name || !email || !password) {
       throw new UnauthorizedException('All fields are required');
     }
-
-    const hashedPassword = await hashPassword(password);
-    const user = await User.create({ name, email, password: hashedPassword });
+    
+    // password gets hashed before saving
+    const user = await User.create({ name, email, password});
 
     const jwtSecret = process.env.JWT_SECRET;
     const jwtExpiresIn = process.env.JWT_EXPIRES_IN;
@@ -56,13 +56,17 @@ export class AuthService {
    */
   async login(loginDto: LoginDto): Promise<{ user: User; token: string }> {
     const { email, password } = loginDto;
-    const user = await User.findOne({ where: { email } });
-
+    const user = await User.findOne({
+      where: { email },
+      attributes: ['id', 'email', 'password', 'name'],
+      raw: true
+    });
+    
+    console.log("user in login", user)
     const isValid = user && (await comparePassword(password, user.password));
     if (!isValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
-
     const jwtSecret = process.env.JWT_SECRET;
     const jwtExpiresIn = process.env.JWT_EXPIRES_IN;
 
@@ -105,15 +109,21 @@ export class AuthService {
    * @param plainPass - Plain text password.
    * @returns User (without password) or null if invalid.
    */
-  async validateUser(email: string, plainPass: string): Promise<Omit<User, 'password'> | null> {
-    const user = await User.findOne({ where: { email } });
-
-    if (user && (await comparePassword(plainPass, user.password))) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password: _, ...rest } = user.toJSON();
-      return rest;
+  async validateUser(email: string, pass: string): Promise<any> {
+    const  user = await User.unscoped().findOne({ where: { email } });
+   
+    if (!user) {
+      return null;
     }
-
+    if (!user.password) {
+      throw new Error('Password not found for user');
+    }
+    console.log('user', user)
+    if (await comparePassword(pass, user.dataValues.password)) {
+      const { password, ...result } = user.toJSON();
+      return result;
+    }
+    console.log('Invalid password')
     return null;
   }
 }

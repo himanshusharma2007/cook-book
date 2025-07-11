@@ -13,20 +13,22 @@ import Loader from "./components/Loader";
 
 
 // Protected route wrapper
+// Fixed Protected route wrapper
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useSelector((state: any) => state.auth);
+  const { user, loading, isInitialized } = useSelector((state: any) => state.auth);
   
-  if (loading) {
+  // Show loader while auth state is being initialized or during loading
+  if (!isInitialized || loading) {
     return <Loader />;
   }
   
+  // Only redirect to login after initialization is complete and user is null
   if (!user) {
     return <Navigate to="/login" replace />;
   }
   
   return <>{children}</>;
 };
-
 const App = () => {
   const dispatch = useDispatch();
   const { loading, user, isInitialized } = useSelector((state: any) => state.auth);
@@ -34,7 +36,7 @@ const App = () => {
   useEffect(() => {
     dispatch(getMe());
   }, [dispatch]);
-
+console.log('isInitialized', isInitialized)
   // Show full page loader while initial authentication check is in progress
   if (!isInitialized || (loading && user === null)) {
     return <Loader />;

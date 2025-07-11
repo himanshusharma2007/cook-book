@@ -39,7 +39,7 @@ export const createRecipe = createAsyncThunk(
       }
     });
     const res = await recipesService.createRecipe(formData);
-    return res.recipe; // Assuming res contains { recipe, message }
+    return res; // Assuming res contains { recipe, message }
   }
 );
 
@@ -71,7 +71,7 @@ export const getRecipeById = createAsyncThunk(
   "recipes/getRecipeById",
   async (id: number, thunkAPI) => {
     const res = await recipesService.getRecipeById(id);
-    return res.recipe; // Assuming res contains { success, recipe }
+    return res; // Assuming res contains { success, recipe }
   }
 );
 
