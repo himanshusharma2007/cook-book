@@ -1,13 +1,19 @@
-import { useState } from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import { FaHome, FaPlus, FaHeart, FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { ChefHat } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../redux/store";
-import { FaUser } from "react-icons/fa6";
-import { logoutUser } from "../redux/slices/authSlice";
+import { useState } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import {
+  FaHome,
+  FaPlus,
+  FaHeart,
+  FaSignOutAlt,
+  FaBars,
+  FaTimes,
+} from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch, useSelector } from 'react-redux';
+import type { RootState } from '../redux/store';
+import { FaUser } from 'react-icons/fa6';
+import { logoutUser } from '../redux/slices/authSlice';
 
 const Header = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -18,12 +24,12 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    toast.success("Logged out successfully!");
-    navigate("/login");
+    toast.success('Logged out successfully!');
+    navigate('/login');
     setDrawerOpen(false);
   };
 
-  const isIndex = location.pathname === "/";
+  const isIndex = location.pathname === '/';
 
   // Navigation links as a component for reuse
   const navLinks = (
@@ -32,7 +38,7 @@ const Header = () => {
         to="/"
         className={({ isActive }) =>
           `flex items-center px-3 py-2 rounded-lg transition-all duration-200 hover:text-amber-400 ${
-            isActive ? "text-yellow-400 " : ""
+            isActive ? 'text-yellow-400 ' : ''
           }`
         }
         title="Home"
@@ -44,7 +50,7 @@ const Header = () => {
         to="/recipe-creator"
         className={({ isActive }) =>
           `flex items-center px-3 py-2 rounded-lg transition-all duration-200 hover:text-amber-400 ${
-            isActive ? "text-yellow-400 " : ""
+            isActive ? 'text-yellow-400 ' : ''
           }`
         }
         title="Create Recipe"
@@ -56,7 +62,7 @@ const Header = () => {
         to="/favorites"
         className={({ isActive }) =>
           `flex items-center px-3 py-2 rounded-lg transition-all duration-200 hover:text-amber-400 ${
-            isActive ? "text-yellow-400 " : ""
+            isActive ? 'text-yellow-400 ' : ''
           }`
         }
         title="Favorites"
@@ -70,7 +76,7 @@ const Header = () => {
             to="/login"
             className={({ isActive }) =>
               `flex items-center px-3 py-2 rounded-lg transition-all duration-200 hover:text-amber-400 ${
-                isActive ? "text-yellow-400 " : ""
+                isActive ? 'text-yellow-400 ' : ''
               }`
             }
             title="Login"
@@ -82,7 +88,7 @@ const Header = () => {
             to="/register"
             className={({ isActive }) =>
               `flex items-center px-3 py-2 rounded-lg transition-all duration-200 hover:text-amber-400 ${
-                isActive ? "text-yellow-400 " : ""
+                isActive ? 'text-yellow-400 ' : ''
               }`
             }
             title="Register"
@@ -107,7 +113,7 @@ const Header = () => {
   return (
     <header
       className={`${
-        isIndex ? "bg-transparent" : "bg-red-900"
+        isIndex ? 'bg-transparent' : 'bg-red-900'
       } absolute top-0 left-0 right-0 z-50 text-white h-20 px-4 md:px-8 lg:px-20 flex justify-between items-center shadow-lg`}
     >
       <div className="text-3xl md:text-4xl font-bold dancing-script relative">
@@ -140,7 +146,9 @@ const Header = () => {
             >
               <FaTimes />
             </button>
-            <div className="text-3xl font-bold mb-8 mt-2 dancing-script">CookBook</div>
+            <div className="text-3xl font-bold mb-8 mt-2 dancing-script">
+              CookBook
+            </div>
             <nav className="flex flex-col space-y-4">{navLinks}</nav>
           </div>
         </div>

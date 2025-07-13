@@ -1,4 +1,4 @@
-import api from "./api";
+import api from './api';
 
 // Types
 interface FavoritesResponse {
@@ -6,22 +6,27 @@ interface FavoritesResponse {
 }
 
 export const favoritesService = {
-  addFavorite: async (recipeId: number): Promise<{ message: string; favoriteId: number }> => {
+  addFavorite: async (
+    recipeId: number
+  ): Promise<{ message: string; favoriteId: number }> => {
     try {
       const response = await api.post(`/favorites/${recipeId}`);
       return response.data;
     } catch (error) {
-        
-      throw new Error(error.response?.data?.message || "Failed to add favorite");
+      throw new Error(
+        error.response?.data?.message || 'Failed to add favorite'
+      );
     }
   },
 
   getFavorites: async (): Promise<FavoritesResponse> => {
     try {
-      const response = await api.get("/favorites");
+      const response = await api.get('/favorites');
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Failed to fetch favorites");
+      throw new Error(
+        error.response?.data?.message || 'Failed to fetch favorites'
+      );
     }
   },
 
@@ -30,7 +35,9 @@ export const favoritesService = {
       const response = await api.delete(`/favorites/${recipeId}`);
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Failed to remove favorite");
+      throw new Error(
+        error.response?.data?.message || 'Failed to remove favorite'
+      );
     }
   },
 };

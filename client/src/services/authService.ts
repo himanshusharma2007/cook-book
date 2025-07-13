@@ -1,4 +1,4 @@
-import api from "./api";
+import api from './api';
 
 // Types
 interface RegisterData {
@@ -24,39 +24,39 @@ interface UserResponse {
 export const authService = {
   register: async (data: RegisterData): Promise<AuthResponse> => {
     try {
-      const response = await api.post("/auth/register", data);
+      const response = await api.post('/auth/register', data);
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Registration failed");
+      throw new Error(error.response?.data?.message || 'Registration failed');
     }
   },
 
   login: async (data: LoginData): Promise<AuthResponse> => {
     try {
-      console.log("check")
-      const response = await api.post("/auth/login", data);
+      console.log('check');
+      const response = await api.post('/auth/login', data);
       return response.data;
     } catch (error) {
-      console.log('error', error)
-      throw new Error(error.response?.data?.message || "Login failed");
+      console.log('error', error);
+      throw new Error(error.response?.data?.message || 'Login failed');
     }
   },
 
   getMe: async (): Promise<UserResponse> => {
     try {
-      const response = await api.get("/auth/me");
+      const response = await api.get('/auth/me');
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Failed to fetch user");
+      throw new Error(error.response?.data?.message || 'Failed to fetch user');
     }
   },
 
   logout: async (): Promise<{ message: string }> => {
     try {
-      const response = await api.post("/auth/logout");
+      const response = await api.post('/auth/logout');
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Logout failed");
+      throw new Error(error.response?.data?.message || 'Logout failed');
     }
   },
 };

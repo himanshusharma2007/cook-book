@@ -1,26 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Search, Heart, ChefHat, Users, Clock, Star, Plus, ChevronDown, Trash2 } from "lucide-react";
-import { getRecipes, getMyRecipes, deleteRecipe, clearError } from "../redux/slices/recipesSlice";
-import { getMe } from "../redux/slices/authSlice";
-import { addFavorite, removeFavorite, getFavorites } from "../redux/slices/favoritesSlice";
-import { toast } from "react-toastify";
-import type { RootState } from "../redux/store";
-import { useNavigate } from "react-router-dom";
-import Loader from "../components/Loader";
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Search, Heart, Users, ChevronDown, Trash2 } from 'lucide-react';
+import {
+  getRecipes,
+  getMyRecipes,
+  deleteRecipe,
+  clearError,
+} from '../redux/slices/recipesSlice';
+import {
+  addFavorite,
+  removeFavorite,
+  getFavorites,
+} from '../redux/slices/favoritesSlice';
+import { toast } from 'react-toastify';
+import type { RootState } from '../redux/store';
+import { useNavigate } from 'react-router-dom';
+import Loader from '../components/Loader';
 
 const Home = () => {
   const dispatch = useDispatch();
-  
+
   // Redux state
-  const { recipes, loading, error, total, page, limit } = useSelector((state: RootState) => state.recipes);
+  const { recipes, loading, error, total, page, limit } = useSelector(
+    (state: RootState) => state.recipes
+  );
   const { user } = useSelector((state: RootState) => state.auth);
-  const { recipes: favoriteRecipes } = useSelector((state: RootState) => state.favorites);
-  const navigate = useNavigate();
+  const { recipes: favoriteRecipes } = useSelector(
+    (state: RootState) => state.favorites
+  );
   // Local state
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeFilter, setActiveFilter] = useState("all");
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [favoriteRecipeIds, setFavoriteRecipeIds] = useState<number[]>([]);
 
@@ -31,9 +44,9 @@ const Home = () => {
 
   // Initialize data on component mount
   useEffect(() => {
-    console.log("Initializing Home component");
-    dispatch(getRecipes({ search: "", page: 1, limit: 8 }));
-    
+    console.log('Initializing Home component');
+    dispatch(getRecipes({ search: '', page: 1, limit: 8 }));
+
     if (user) {
       dispatch(getFavorites());
     }
@@ -46,9 +59,9 @@ const Home = () => {
     }
 
     const timeout = setTimeout(() => {
-      if (activeFilter === "all") {
+      if (activeFilter === 'all') {
         dispatch(getRecipes({ search: searchTerm, page: 1, limit: 8 }));
-      } else if (activeFilter === "my") {
+      } else if (activeFilter === 'my') {
         dispatch(getMyRecipes({ page: 1, limit: 8 }));
       }
     }, 500);
@@ -63,12 +76,12 @@ const Home = () => {
   // Handle filter change
   const handleFilterChange = (filter: string) => {
     setActiveFilter(filter);
-    setSearchTerm(""); // Clear search when switching filters
+    setSearchTerm(''); // Clear search when switching filters
     setIsDropdownOpen(false); // Close dropdown
-    
-    if (filter === "all") {
-      dispatch(getRecipes({ search: "", page: 1, limit: 8 }));
-    } else if (filter === "my") {
+
+    if (filter === 'all') {
+      dispatch(getRecipes({ search: '', page: 1, limit: 8 }));
+    } else if (filter === 'my') {
       dispatch(getMyRecipes({ page: 1, limit: 8 }));
     }
   };
@@ -76,40 +89,40 @@ const Home = () => {
   // Handle add/remove favorite
   const handleFavoriteToggle = async (recipeId: number) => {
     if (!user) {
-      toast.error("Please log in to add favorites");
+      toast.error('Please log in to add favorites');
       return;
     }
 
     const isFavorite = favoriteRecipeIds.includes(recipeId);
-    
+
     try {
       if (isFavorite) {
         await dispatch(removeFavorite(recipeId)).unwrap();
         setFavoriteRecipeIds(prev => prev.filter(id => id !== recipeId));
-        toast.success("Removed from favorites");
+        toast.success('Removed from favorites');
       } else {
         await dispatch(addFavorite(recipeId)).unwrap();
         setFavoriteRecipeIds(prev => [...prev, recipeId]);
-        toast.success("Added to favorites");
+        toast.success('Added to favorites');
       }
-    } catch (error) {
-      toast.error("Failed to update favorites");
+    } catch (error: any) {
+      toast.error('Failed to update favorites', error.message || '');
     }
   };
 
   // Handle delete recipe
   const handleDeleteRecipe = async (recipeId: number) => {
     if (!user) {
-      toast.error("Please log in to delete recipes");
+      toast.error('Please log in to delete recipes');
       return;
     }
 
-    if (window.confirm("Are you sure you want to delete this recipe?")) {
+    if (window.confirm('Are you sure you want to delete this recipe?')) {
       try {
         await dispatch(deleteRecipe(recipeId)).unwrap();
-        toast.success("Recipe deleted successfully");
-      } catch (error) {
-        toast.error("Failed to delete recipe");
+        toast.success('Recipe deleted successfully');
+      } catch (error: any) {
+        toast.error('Failed to delete recipe', error.message || '');
       }
     }
   };
@@ -123,9 +136,9 @@ const Home = () => {
   // Handle load more recipes
   const handleLoadMore = () => {
     const nextPage = page + 1;
-    if (activeFilter === "all") {
+    if (activeFilter === 'all') {
       dispatch(getRecipes({ search: searchTerm, page: nextPage, limit }));
-    } else if (activeFilter === "my") {
+    } else if (activeFilter === 'my') {
       dispatch(getMyRecipes({ page: nextPage, limit }));
     }
   };
@@ -137,14 +150,14 @@ const Home = () => {
 
   // Get filter options
   const getFilterOptions = () => [
-    { value: "all", label: "All Recipes" },
-    { value: "my", label: "My Recipes" }
+    { value: 'all', label: 'All Recipes' },
+    { value: 'my', label: 'My Recipes' },
   ];
 
   // Get current filter label
   const getCurrentFilterLabel = () => {
     const option = getFilterOptions().find(opt => opt.value === activeFilter);
-    return option ? option.label : "All Recipes";
+    return option ? option.label : 'All Recipes';
   };
 
   // Clear error on component unmount
@@ -168,13 +181,13 @@ const Home = () => {
       <div className="relative h-[70vh] bg-gradient-to-r from-orange-600 to-red-600 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&h=600&fit=crop')`
+            backgroundImage: `url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&h=600&fit=crop')`,
           }}
         ></div>
-        
+
         {/* Hero Content */}
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
           <div className="mb-8">
@@ -197,7 +210,7 @@ const Home = () => {
                     type="text"
                     placeholder="Search any recipe..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={e => setSearchTerm(e.target.value)}
                     className="w-full pl-12 pr-4 py-4 border border-gray-200 focus:outline-none focus:border-transparent text-gray-700 placeholder-gray-400 rounded-xl"
                   />
                 </div>
@@ -208,18 +221,24 @@ const Home = () => {
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="flex items-center justify-between gap-2 w-full md:w-auto px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 min-w-[140px]"
                   >
-                    <span className="font-medium">{getCurrentFilterLabel()}</span>
-                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                    <span className="font-medium">
+                      {getCurrentFilterLabel()}
+                    </span>
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                    />
                   </button>
-                  
+
                   {isDropdownOpen && (
                     <div className="absolute top-full left-0 mt-2 w-full bg-white shadow-lg border border-gray-200 overflow-hidden z-50 rounded-xl">
-                      {getFilterOptions().map((option) => (
+                      {getFilterOptions().map(option => (
                         <button
                           key={option.value}
                           onClick={() => handleFilterChange(option.value)}
                           className={`w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-200 ${
-                            activeFilter === option.value ? 'bg-orange-50 text-orange-600 font-medium' : 'text-gray-700'
+                            activeFilter === option.value
+                              ? 'bg-orange-50 text-orange-600 font-medium'
+                              : 'text-gray-700'
                           }`}
                         >
                           {option.label}
@@ -239,21 +258,19 @@ const Home = () => {
         {/* Section Header */}
         <div className="text-center mb-8">
           <h2 className="text-3xl merriweather font-bold text-gray-800 mb-2">
-            {activeFilter === "all" ? "All Recipes" : "My Recipes"}
+            {activeFilter === 'all' ? 'All Recipes' : 'My Recipes'}
           </h2>
           <p className="text-gray-600">
-            {total > 0 ? `${total} recipes found` : "No recipes found"}
+            {total > 0 ? `${total} recipes found` : 'No recipes found'}
           </p>
         </div>
 
         {/* Loading State */}
-        {loading && recipes.length === 0 && (
-        <Loader />
-        )}
+        {loading && recipes.length === 0 && <Loader />}
 
         {/* Recipe Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {recipes.map((recipe) => (
+          {recipes.map(recipe => (
             <div
               key={recipe.id}
               className="bg-white overflow-clip flex flex-col justify-between rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100"
@@ -265,7 +282,7 @@ const Home = () => {
                   alt={recipe.name}
                   className="w-full h-48 object-cover"
                 />
-                
+
                 {/* Action Buttons */}
                 <div className="absolute top-3 right-3 flex gap-2">
                   {/* Favorite Button */}
@@ -273,19 +290,19 @@ const Home = () => {
                     onClick={() => handleFavoriteToggle(recipe.id)}
                     className={`p-2 rounded-full transition-all duration-200 ${
                       isRecipeFavorite(recipe.id)
-                        ? "bg-red-500 text-white shadow-lg"
-                        : "bg-white text-gray-600 hover:bg-red-50 hover:text-red-500"
+                        ? 'bg-red-500 text-white shadow-lg'
+                        : 'bg-white text-gray-600 hover:bg-red-50 hover:text-red-500'
                     }`}
                   >
                     <Heart
                       className={`w-5 h-5 ${
-                        isRecipeFavorite(recipe.id) ? "fill-current" : ""
+                        isRecipeFavorite(recipe.id) ? 'fill-current' : ''
                       }`}
                     />
                   </button>
-                  
+
                   {/* Delete Button (only for My Recipes) */}
-                  {activeFilter === "my" && (
+                  {activeFilter === 'my' && (
                     <button
                       onClick={() => handleDeleteRecipe(recipe.id)}
                       className="p-2 rounded-full bg-white text-gray-600 hover:bg-red-50 hover:text-red-500 transition-all duration-200"
@@ -301,17 +318,17 @@ const Home = () => {
                 <h3 className="text-lg text-nowrap font-semibold text-gray-800 mb-2 line-clamp-2">
                   {recipe.name}
                 </h3>
-                
+
                 {/* Recipe Stats */}
                 <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
                   <div className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
                     {console.log('recipe', recipe)}
-                    <span>By {recipe?.user?.name?.split(" ")[0]}</span>
+                    <span>By {recipe?.user?.name?.split(' ')[0]}</span>
                   </div>
                 </div>
 
-               {/* Action Button */}
+                {/* Action Button */}
                 <button
                   onClick={() => handleViewDetails(recipe.id)}
                   className="w-full bg-gradient-to-r  from-orange-500 to-red-500 text-white py-3 rounded-xl font-medium hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105"
@@ -319,7 +336,6 @@ const Home = () => {
                   View Recipe
                 </button>
               </div>
-               
             </div>
           ))}
         </div>
@@ -328,14 +344,14 @@ const Home = () => {
         {console.log('total', total)}
         {recipes.length < total && (
           <div className="flex space-x-2 items-center justify-center mt-8">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
 
             <button
               onClick={handleLoadMore}
               className="px-8 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-semibold shadow hover:from-orange-600 hover:to-red-600 transition-all duration-200"
               disabled={loading}
             >
-              {loading ? "Loading..." : "Load More"}
+              {loading ? 'Loading...' : 'Load More'}
             </button>
           </div>
         )}

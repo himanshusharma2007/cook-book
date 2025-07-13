@@ -1,12 +1,21 @@
-import { useState, useEffect, useRef } from "react";
-import { FaImage, FaPlus, FaTimes, FaUtensils, FaList, FaFileAlt, FaSearch, FaExternalLinkAlt } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import { createRecipe } from "../redux/slices/recipesSlice";
-import type { RootState } from "../redux/store";
-import { toast } from "react-toastify";
-import QuillEditor from "../components/QuillEditor";
-import { BiUpload } from "react-icons/bi";
-import axios from "axios";
+import { useState, useEffect, useRef } from 'react';
+import {
+  FaImage,
+  FaPlus,
+  FaTimes,
+  FaUtensils,
+  FaList,
+  FaFileAlt,
+  FaSearch,
+  FaExternalLinkAlt,
+} from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { createRecipe } from '../redux/slices/recipesSlice';
+import type { RootState } from '../redux/store';
+import { toast } from 'react-toastify';
+import QuillEditor from '../components/QuillEditor';
+import { BiUpload } from 'react-icons/bi';
+import axios from 'axios';
 
 // Forkify API types
 interface ForkifyRecipe {
@@ -32,17 +41,19 @@ interface ForkifyDetailResponse {
 
 const RecipeCreator = () => {
   const [recipe, setRecipe] = useState({
-    name: "",
-    instructions: "",
+    name: '',
+    instructions: '',
     thumbnail: null as File | null,
-    ingredients: [""],
+    ingredients: [''],
   });
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [isImageFromAPI, setIsImageFromAPI] = useState(false);
 
   // Forkify API states
-  const [recipeSuggestions, setRecipeSuggestions] = useState<ForkifyRecipe[]>([]);
+  const [recipeSuggestions, setRecipeSuggestions] = useState<ForkifyRecipe[]>(
+    []
+  );
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [selectedRecipeId, setSelectedRecipeId] = useState<string | null>(null);
@@ -76,7 +87,7 @@ const RecipeCreator = () => {
         setShowSuggestions(false);
       }
     } catch (error) {
-      console.error("Error searching recipes:", error);
+      console.error('Error searching recipes:', error);
       setRecipeSuggestions([]);
       setShowSuggestions(false);
     } finally {
@@ -106,7 +117,10 @@ const RecipeCreator = () => {
   };
 
   // Utility function to convert image URL to File object
-  const urlToFile = async (imageUrl: string, filename: string = 'image.jpg'): Promise<File> => {
+  const urlToFile = async (
+    imageUrl: string,
+    filename: string = 'image.jpg'
+  ): Promise<File> => {
     // Upgrade http to https if needed
     const safeUrl = imageUrl.startsWith('http://')
       ? imageUrl.replace('http://', 'https://')
@@ -116,7 +130,6 @@ const RecipeCreator = () => {
     const blob = await response.blob();
     return new File([blob], filename, { type: blob.type });
   };
-
 
   // Handle recipe selection from suggestions
   const handleRecipeSelect = async (selectedRecipe: ForkifyRecipe) => {
@@ -131,15 +144,16 @@ const RecipeCreator = () => {
       );
 
       const detailedRecipe = response.data.recipe;
-      console.log("Forkify API Response:", detailedRecipe);
-      console.log("Ingredients from API:", detailedRecipe.ingredients);
+      console.log('Forkify API Response:', detailedRecipe);
+      console.log('Ingredients from API:', detailedRecipe.ingredients);
 
       // Prepare ingredients array - make sure we have the ingredients from the API
-      const ingredientsList = detailedRecipe.ingredients && detailedRecipe.ingredients.length > 0
-        ? detailedRecipe.ingredients.filter(ing => ing.trim() !== "")
-        : [""];
+      const ingredientsList =
+        detailedRecipe.ingredients && detailedRecipe.ingredients.length > 0
+          ? detailedRecipe.ingredients.filter(ing => ing.trim() !== '')
+          : [''];
 
-      console.log("Filtered ingredients:", ingredientsList);
+      console.log('Filtered ingredients:', ingredientsList);
 
       // Convert image URL to File object
       let thumbnailFile: File | null = null;
@@ -147,15 +161,21 @@ const RecipeCreator = () => {
 
       if (detailedRecipe.image_url) {
         try {
-          const cleanFilename = detailedRecipe.title.replace(/[^a-zA-Z0-9]/g, '_') + '.jpg';
-          thumbnailFile = await urlToFile(detailedRecipe.image_url, cleanFilename);
+          const cleanFilename =
+            detailedRecipe.title.replace(/[^a-zA-Z0-9]/g, '_') + '.jpg';
+          thumbnailFile = await urlToFile(
+            detailedRecipe.image_url,
+            cleanFilename
+          );
           console.log('thumbnailFile created:', thumbnailFile);
 
           // Create preview URL
           imageUrl = URL.createObjectURL(thumbnailFile);
         } catch (imageError) {
-          console.error("Error downloading image:", imageError);
-          toast.warning("Could not download recipe image, but other details were loaded");
+          console.error('Error downloading image:', imageError);
+          toast.warning(
+            'Could not download recipe image, but other details were loaded'
+          );
         }
       }
 
@@ -173,7 +193,7 @@ const RecipeCreator = () => {
         name: detailedRecipe.title,
         instructions: basicInstructions,
         thumbnail: thumbnailFile,
-        ingredients: ingredientsList
+        ingredients: ingredientsList,
       }));
 
       if (imageUrl) {
@@ -181,11 +201,12 @@ const RecipeCreator = () => {
         setIsImageFromAPI(true);
       }
 
-      toast.success(`Recipe "${detailedRecipe.title}" loaded with ${ingredientsList.length} ingredients!`);
-
+      toast.success(
+        `Recipe "${detailedRecipe.title}" loaded with ${ingredientsList.length} ingredients!`
+      );
     } catch (error) {
-      console.error("Error fetching recipe details:", error);
-      toast.error("Failed to load recipe details");
+      console.error('Error fetching recipe details:', error);
+      toast.error('Failed to load recipe details');
     } finally {
       setFetchingRecipe(false);
     }
@@ -194,7 +215,10 @@ const RecipeCreator = () => {
   // Handle click outside suggestions
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target as Node)) {
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target as Node)
+      ) {
         setShowSuggestions(false);
       }
     };
@@ -219,44 +243,52 @@ const RecipeCreator = () => {
 
     // Validation
     if (!recipe.name.trim()) {
-      toast.error("Recipe name is required");
+      toast.error('Recipe name is required');
       return;
     }
     if (!recipe.instructions.trim()) {
-      toast.error("Instructions are required");
+      toast.error('Instructions are required');
       return;
     }
     if (recipe.ingredients.every(ing => !ing.trim())) {
-      toast.error("At least one ingredient is required");
+      toast.error('At least one ingredient is required');
       return;
     }
 
     const formData = new FormData();
-    formData.append("name", recipe.name);
-    formData.append("instructions", recipe.instructions);
-    formData.append("ingredients", JSON.stringify(recipe.ingredients.filter(ing => ing.trim())));
+    formData.append('name', recipe.name);
+    formData.append('instructions', recipe.instructions);
+    formData.append(
+      'ingredients',
+      JSON.stringify(recipe.ingredients.filter(ing => ing.trim()))
+    );
 
     console.log('Submitting recipe.thumbnail:', recipe.thumbnail);
 
     // Ensure we have a valid File object for the thumbnail
     if (recipe.thumbnail) {
-      formData.append("thumbnail", recipe.thumbnail);
+      formData.append('thumbnail', recipe.thumbnail);
     }
 
     try {
       await dispatch(createRecipe(formData as any)).unwrap();
-      toast.success("Recipe created successfully!");
-      setRecipe({ name: "", instructions: "", thumbnail: null, ingredients: [""] });
+      toast.success('Recipe created successfully!');
+      setRecipe({
+        name: '',
+        instructions: '',
+        thumbnail: null,
+        ingredients: [''],
+      });
       setPreviewUrl(null);
       setSelectedRecipeId(null);
       setIsImageFromAPI(false);
     } catch (err) {
-      toast.error(err || "Failed to create recipe");
+      toast.error(err || 'Failed to create recipe');
     }
   };
 
   const addIngredient = () => {
-    setRecipe(prev => ({ ...prev, ingredients: [...prev.ingredients, ""] }));
+    setRecipe(prev => ({ ...prev, ingredients: [...prev.ingredients, ''] }));
   };
 
   const removeIngredient = (index: number) => {
@@ -321,8 +353,12 @@ const RecipeCreator = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full mb-4">
             <FaUtensils className="text-white  text-2xl merriweather" />
           </div>
-          <h1 className=" text-4xl merriweather font-bold text-gray-800 mb-2">Create New Recipe</h1>
-          <p className="text-gray-600">Share your culinary masterpiece with the world</p>
+          <h1 className=" text-4xl merriweather font-bold text-gray-800 mb-2">
+            Create New Recipe
+          </h1>
+          <p className="text-gray-600">
+            Share your culinary masterpiece with the world
+          </p>
         </div>
 
         {/* Error Message */}
@@ -348,7 +384,7 @@ const RecipeCreator = () => {
                       type="text"
                       placeholder="Enter a recipe name (e.g., 'pizza', 'pasta')..."
                       value={recipe.name}
-                      onChange={(e) => handleNameChange(e.target.value)}
+                      onChange={e => handleNameChange(e.target.value)}
                       className="w-full p-4 pr-12 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200  text-lg merriweather"
                       disabled={fetchingRecipe}
                     />
@@ -376,13 +412,17 @@ const RecipeCreator = () => {
                               src={suggestion.image_url}
                               alt={suggestion.title}
                               className="w-12 h-12 object-cover rounded-lg"
-                              onError={(e) => {
+                              onError={e => {
                                 e.currentTarget.src = '/api/placeholder/48/48';
                               }}
                             />
                             <div className="flex-1">
-                              <h4 className="font-medium text-gray-800 text-sm">{suggestion.title}</h4>
-                              <p className="text-xs text-gray-500">{suggestion.publisher}</p>
+                              <h4 className="font-medium text-gray-800 text-sm">
+                                {suggestion.title}
+                              </h4>
+                              <p className="text-xs text-gray-500">
+                                {suggestion.publisher}
+                              </p>
                               <div className="flex items-center mt-1">
                                 <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded">
                                   Rank: {suggestion.social_rank}
@@ -424,10 +464,11 @@ const RecipeCreator = () => {
                   )}
                 </label>
                 <div
-                  className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ${dragOver
-                    ? 'border-orange-400 bg-orange-50'
-                    : 'border-gray-300 hover:border-orange-400 hover:bg-orange-50'
-                    }`}
+                  className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 ${
+                    dragOver
+                      ? 'border-orange-400 bg-orange-50'
+                      : 'border-gray-300 hover:border-orange-400 hover:bg-orange-50'
+                  }`}
                   onDrop={handleDrop}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
@@ -450,19 +491,24 @@ const RecipeCreator = () => {
                   ) : (
                     <div className="py-8">
                       <BiUpload className=" text-4xl merriweather text-gray-400 mb-4 mx-auto" />
-                      <p className="text-gray-600 mb-2">Drop your image here or click to browse</p>
-                      <p className="text-gray-400 text-sm">PNG, JPG, GIF up to 10MB</p>
+                      <p className="text-gray-600 mb-2">
+                        Drop your image here or click to browse
+                      </p>
+                      <p className="text-gray-400 text-sm">
+                        PNG, JPG, GIF up to 10MB
+                      </p>
                     </div>
                   )}
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+                    onChange={e =>
+                      handleFileChange(e.target.files?.[0] || null)
+                    }
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
                 </div>
               </div>
-
             </div>
 
             {/* Right Column */}
@@ -482,13 +528,17 @@ const RecipeCreator = () => {
                   {recipe.ingredients.map((ingredient, index) => (
                     <div key={index} className="flex items-center space-x-3">
                       <div className="flex-shrink-0 w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                        <span className="text-orange-600 font-medium text-sm">{index + 1}</span>
+                        <span className="text-orange-600 font-medium text-sm">
+                          {index + 1}
+                        </span>
                       </div>
                       <input
                         type="text"
                         placeholder={`Ingredient ${index + 1}`}
                         value={ingredient}
-                        onChange={(e) => handleIngredientChange(index, e.target.value)}
+                        onChange={e =>
+                          handleIngredientChange(index, e.target.value)
+                        }
                         className="flex-1 p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                       />
                       {recipe.ingredients.length > 1 && (
@@ -512,7 +562,6 @@ const RecipeCreator = () => {
                   </button>
                 </div>
               </div>
-
             </div>
           </div>
 

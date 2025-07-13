@@ -1,4 +1,4 @@
-import api from "./api";
+import api from './api';
 
 // Types
 interface RecipeData {
@@ -22,35 +22,46 @@ interface RecipesResponse {
 
 export const recipesService = {
   createRecipe: async (data: RecipeData): Promise<RecipeResponse> => {
-   
-
     try {
-      const response = await api.post("/recipes", data, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const response = await api.post('/recipes', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Failed to create recipe");
+      throw new Error(
+        error.response?.data?.message || 'Failed to create recipe'
+      );
     }
   },
 
-  getRecipes: async (search?: string, page: number = 1, limit: number = 10): Promise<RecipesResponse> => {
+  getRecipes: async (
+    search?: string,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<RecipesResponse> => {
     try {
       const params = { search, page, limit };
-      const response = await api.get("/recipes", { params });
+      const response = await api.get('/recipes', { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Failed to fetch recipes");
+      throw new Error(
+        error.response?.data?.message || 'Failed to fetch recipes'
+      );
     }
   },
 
-  getMyRecipes: async (page: number = 1, limit: number = 10): Promise<RecipesResponse> => {
+  getMyRecipes: async (
+    page: number = 1,
+    limit: number = 10
+  ): Promise<RecipesResponse> => {
     try {
       const params = { page, limit };
-      const response = await api.get("/recipes/mine", { params });
+      const response = await api.get('/recipes/mine', { params });
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Failed to fetch your recipes");
+      throw new Error(
+        error.response?.data?.message || 'Failed to fetch your recipes'
+      );
     }
   },
 
@@ -59,16 +70,22 @@ export const recipesService = {
       const response = await api.delete(`/recipes/${id}`);
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Failed to delete recipe");
+      throw new Error(
+        error.response?.data?.message || 'Failed to delete recipe'
+      );
     }
   },
 
-  getRecipeById: async (id: number): Promise<{ recipe: { id: number; name: string; postedBy: number } }> => {
+  getRecipeById: async (
+    id: number
+  ): Promise<{ recipe: { id: number; name: string; postedBy: number } }> => {
     try {
       const response = await api.get(`/recipes/${id}`);
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Failed to fetch recipe");
+      throw new Error(
+        error.response?.data?.message || 'Failed to fetch recipe'
+      );
     }
   },
 };
