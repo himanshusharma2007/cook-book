@@ -31,8 +31,6 @@ import { getUserId } from 'src/utils/auth.utils';
 
 @Controller('recipes')
 export class RecipesController {
-  
-
   constructor(
     private recipesService: RecipesService,
     private cloudinaryUtils: CloudinaryUtils,
@@ -82,7 +80,7 @@ export class RecipesController {
         name: recipe.name,
         postedBy: recipe.postedBy,
       };
-    } catch (error : any) {
+    } catch (error: any) {
       if (error instanceof UnauthorizedException) throw error;
       throw new BadRequestException(error.message);
     }
@@ -108,7 +106,7 @@ export class RecipesController {
     @Query('limit') limit?: string
   ) {
     try {
-      console.log("search, page, limit", search, page, limit);
+      console.log('search, page, limit', search, page, limit);
       const pageNum = parseInt(page ?? '1');
       const limitNum = parseInt(limit ?? '10');
 
@@ -117,7 +115,7 @@ export class RecipesController {
       setResponseMeta(res, 'recipes', 'Recipes fetched successfully');
 
       return { recipes, total, page: pageNum, limit: limitNum };
-    } catch (error : any) {
+    } catch (error: any) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -157,7 +155,7 @@ export class RecipesController {
       setResponseMeta(res, 'recipes', 'User recipes fetched successfully');
 
       return { recipes, total, page: pageNum, limit: limitNum };
-    } catch (error : any) {
+    } catch (error: any) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -189,13 +187,12 @@ export class RecipesController {
       await this.favoritesService.removeAllFavoritesForRecipe(+id);
       if (recipe.thumbnail) await this.cloudinaryUtils.deleteImage(recipe.thumbnail);
 
-       
       await this.recipesService.deleteRecipe(+id, getUserId(req));
 
       setResponseMeta(res, 'message', 'Recipe deleted successfully');
 
       return;
-    } catch (error : any) {
+    } catch (error: any) {
       if (error instanceof UnauthorizedException || error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException(error.message);
     }
@@ -228,7 +225,7 @@ export class RecipesController {
       setResponseMeta(res, 'recipe', 'Recipe fetched successfully');
 
       return recipe;
-    } catch (error : any) {
+    } catch (error: any) {
       if (error instanceof UnauthorizedException || error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException(error.message);
     }

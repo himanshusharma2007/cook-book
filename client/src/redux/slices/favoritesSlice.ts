@@ -51,13 +51,10 @@ const favoritesSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        addFavorite.fulfilled,
-        (state, action: PayloadAction<{ id: number; message: string }>) => {
-          state.loading = false;
-          // Optionally fetch updated favorites if needed
-        }
-      )
+      .addCase(addFavorite.fulfilled, (state, _) => {
+        state.loading = false;
+        // Optionally fetch updated favorites if needed
+      })
       .addCase(addFavorite.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to add favorite';

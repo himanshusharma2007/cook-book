@@ -18,7 +18,11 @@ interface IngredientsSectionProps {
  * @param props - Component props.
  * @returns JSX.Element
  */
-const IngredientsSection = ({ ingredients, checkedIngredients, onIngredientToggle }: IngredientsSectionProps) => {
+const IngredientsSection = ({
+  ingredients,
+  checkedIngredients,
+  onIngredientToggle,
+}: IngredientsSectionProps) => {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
       <h2 className="text-2xl merriweather font-semibold text-gray-800 mb-4">
@@ -36,7 +40,11 @@ const IngredientsSection = ({ ingredients, checkedIngredients, onIngredientToggl
             ) : (
               <Circle className="w-5 h-5 text-gray-400" />
             )}
-            <span className={checkedIngredients[index] ? 'line-through text-gray-500' : ''}>
+            <span
+              className={
+                checkedIngredients[index] ? 'line-through text-gray-500' : ''
+              }
+            >
               {ingredient}
             </span>
           </li>

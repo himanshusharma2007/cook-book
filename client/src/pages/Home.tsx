@@ -17,7 +17,6 @@ import Loader from '../components/common/Loader';
 import SearchBar from '../components/common/SearchBar';
 import RecipeCard from '../components/common/RecipeCard';
 import LoadMoreButton from '../components/common/LoadMoreButton';
-import { useFavoriteToggle } from '../hooks/useFavoriteToggle';
 
 /**
  * Home page component.
@@ -58,7 +57,7 @@ const Home = () => {
       try {
         await dispatch(deleteRecipe(recipeId)).unwrap();
         toast.success('Recipe deleted successfully');
-      } catch (error: any) {
+      } catch (error: Error) {
         toast.error('Failed to delete recipe', error.message || '');
       }
     }
@@ -133,16 +132,15 @@ const Home = () => {
               user={user}
               showDeleteButton={activeFilter === 'my'}
               // onUnfavorite={() => useFavoriteToggle(recipe.id).toggleFavorite()}
-              onViewDetails={() => (window.location.href = `/recipe/${recipe.id}`)}
+              onViewDetails={() =>
+                (window.location.href = `/recipe/${recipe.id}`)
+              }
               onDelete={() => handleDeleteRecipe(recipe.id)}
             />
           ))}
         </div>
         {recipes.length < total && (
-          <LoadMoreButton
-            loading={loading}
-            onLoadMore={handleLoadMore}
-          />
+          <LoadMoreButton loading={loading} onLoadMore={handleLoadMore} />
         )}
       </div>
     </div>

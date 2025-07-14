@@ -25,11 +25,16 @@ interface RegisterForm {
 /**
  * Yup validation schema for registration form.
  */
-const schema = yup.object({
-  name: yup.string().trim().required('Name is required'),
-  email: yup.string().email('Invalid email').required('Email is required'),
-  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-}).required();
+const schema = yup
+  .object({
+    name: yup.string().trim().required('Name is required'),
+    email: yup.string().email('Invalid email').required('Email is required'),
+    password: yup
+      .string()
+      .min(6, 'Password must be at least 6 characters')
+      .required('Password is required'),
+  })
+  .required();
 
 /**
  * Register page component.
@@ -42,7 +47,11 @@ const Register = () => {
     (state: RootState) => state.auth
   );
 
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterForm>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterForm>({
     resolver: yupResolver(schema),
   });
 
@@ -107,7 +116,9 @@ const Register = () => {
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
             />
             {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
           <div className="relative">
@@ -119,7 +130,9 @@ const Register = () => {
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
             />
             {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
             )}
           </div>
           <button

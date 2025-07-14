@@ -28,7 +28,7 @@ export const registerUser = createAsyncThunk(
     try {
       const res = await authService.register(formData);
       return res; // Assuming res contains { user, message }
-    } catch (error: any) {
+    } catch (error: Error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || 'Registration failed'
       );
@@ -43,7 +43,7 @@ export const loginUser = createAsyncThunk(
       const res = await authService.login(formData);
       console.log('res', res); // ✅ Cookie is set
       return res;
-    } catch (error: any) {
+    } catch (error: Error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || 'Login failed'
       );
@@ -55,7 +55,7 @@ export const getMe = createAsyncThunk('auth/getMe', async (_, thunkAPI) => {
   try {
     const res = await authService.getMe();
     return res;
-  } catch (error: any) {
+  } catch (error: Error) {
     return thunkAPI.rejectWithValue(
       error.response?.data?.message || 'Failed to fetch user'
     );
@@ -68,7 +68,7 @@ export const logoutUser = createAsyncThunk(
     try {
       const res = await authService.logout();
       return res;
-    } catch (error: any) {
+    } catch (error: Error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || 'Logout failed'
       );

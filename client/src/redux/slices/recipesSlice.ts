@@ -22,15 +22,12 @@ const initialState: RecipesState = {
 
 export const createRecipe = createAsyncThunk(
   'recipes/createRecipe',
-  async (
-    formData: {
-      name: string;
-      instructions: string;
-      ingredients: string[];
-      thumbnail?: File;
-    },
-    thunkAPI
-  ) => {
+  async (formData: {
+    name: string;
+    instructions: string;
+    ingredients: string[];
+    thumbnail?: File;
+  }) => {
     // Debug logs for formData
     for (const [key, value] of formData.entries()) {
       if (key === 'thumbnail' && value instanceof File) {
@@ -57,10 +54,7 @@ export const createRecipe = createAsyncThunk(
 
 export const getRecipes = createAsyncThunk(
   'recipes/getRecipes',
-  async (
-    params: { search?: string; page?: number; limit?: number } = {},
-    thunkAPI
-  ) => {
+  async (params: { search?: string; page?: number; limit?: number } = {}) => {
     const res = await recipesService.getRecipes(
       params.search,
       params.page,
@@ -77,7 +71,7 @@ export const getRecipes = createAsyncThunk(
 
 export const getMyRecipes = createAsyncThunk(
   'recipes/getMyRecipes',
-  async (params: { page?: number; limit?: number } = {}, thunkAPI) => {
+  async (params: { page?: number; limit?: number } = {}) => {
     const res = await recipesService.getMyRecipes(params.page, params.limit);
     return {
       recipes: res.recipes,
@@ -90,7 +84,7 @@ export const getMyRecipes = createAsyncThunk(
 
 export const deleteRecipe = createAsyncThunk(
   'recipes/deleteRecipe',
-  async (id: number, thunkAPI) => {
+  async (id: numbe) => {
     await recipesService.deleteRecipe(id);
     return id; // Return ID to filter out the deleted recipe
   }
@@ -98,7 +92,7 @@ export const deleteRecipe = createAsyncThunk(
 
 export const getRecipeById = createAsyncThunk(
   'recipes/getRecipeById',
-  async (id: number, thunkAPI) => {
+  async (id: numbe) => {
     const res = await recipesService.getRecipeById(id);
     return res; // Assuming res contains { success, recipe }
   }

@@ -19,7 +19,6 @@ import { setResponseMeta } from 'src/utils/response.utils';
 import { LogExecution } from 'src/common/decorators/log.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
-import { get } from 'http';
 import { getUserId } from 'src/utils/auth.utils';
 
 @Controller('auth')
@@ -49,7 +48,7 @@ export class AuthController {
       setResponseMeta(res, 'user', 'User registered successfully');
 
       return { id: user.id, name: user.name, email: user.email };
-    } catch (error : any) {
+    } catch (error: any) {
       throw new BadRequestException(error.message);
     }
   }
@@ -78,7 +77,7 @@ export class AuthController {
       setResponseMeta(res, 'user', 'Login successful');
 
       return { id: user.id, name: user.name, email: user.email };
-    } catch (error : any) {
+    } catch (error: any) {
       throw new UnauthorizedException(error.message);
     }
   }
@@ -104,7 +103,7 @@ export class AuthController {
       setResponseMeta(res, 'user', 'User fetched successfully');
 
       return user;
-    } catch (error : any) {
+    } catch (error: any) {
       if (error instanceof UnauthorizedException) throw error;
       throw new NotFoundException(error.message);
     }

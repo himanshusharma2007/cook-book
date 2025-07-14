@@ -5,7 +5,11 @@
  */
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { addFavorite, getFavorites, removeFavorite } from '../redux/slices/favoritesSlice';
+import {
+  addFavorite,
+  getFavorites,
+  removeFavorite,
+} from '../redux/slices/favoritesSlice';
 import type { RootState } from '../redux/store';
 
 export const useFavoriteToggle = (recipeId: number) => {
@@ -20,7 +24,7 @@ export const useFavoriteToggle = (recipeId: number) => {
    * Toggle favorite status for the recipe.
    */
   const toggleFavorite = async () => {
-    console.log("hello" , isFavorite);
+    console.log('hello', isFavorite);
     if (!user) {
       toast.error('Please log in to add favorites');
       return;
@@ -34,7 +38,6 @@ export const useFavoriteToggle = (recipeId: number) => {
         toast.success('Added to favorites');
       }
       dispatch(getFavorites());
-
     } catch {
       toast.error('Failed to update favorites');
     }

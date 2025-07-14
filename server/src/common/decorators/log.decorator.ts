@@ -4,9 +4,9 @@ export function LogExecution(): MethodDecorator {
   return (
     target: object,
     propertyKey: string | symbol,
-     
-    descriptor: TypedPropertyDescriptor<any> 
-  ): any => { 
+
+    descriptor: TypedPropertyDescriptor<any>
+  ): any => {
     const originalMethod = descriptor.value;
 
     if (!originalMethod) return;

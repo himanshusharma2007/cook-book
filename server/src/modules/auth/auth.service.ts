@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from '../user/entities/user.model';
 import { sign, SignOptions } from 'jsonwebtoken';
-import  * as dotenv from 'dotenv';
-import { comparePassword, hashPassword } from 'src/utils/hash';
+import * as dotenv from 'dotenv';
+import { comparePassword } from 'src/utils/hash';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtPayload } from './types/jwt-payload';
@@ -23,9 +23,9 @@ export class AuthService {
     if (!name || !email || !password) {
       throw new UnauthorizedException('All fields are required');
     }
-    
+
     // password gets hashed before saving
-    const user = await User.create({ name, email, password});
+    const user = await User.create({ name, email, password });
 
     const jwtSecret = process.env.JWT_SECRET;
     const jwtExpiresIn = process.env.JWT_EXPIRES_IN;
@@ -37,13 +37,8 @@ export class AuthService {
     const signOptions: SignOptions = {
       expiresIn: (jwtExpiresIn || '1h') as any,
     };
-    
 
-    const token = sign(
-      { id: user.id, email: user.email } as JwtPayload,
-      jwtSecret,
-      signOptions
-    );
+    const token = sign({ id: user.id, email: user.email } as JwtPayload, jwtSecret, signOptions);
 
     return { user, token };
   }
@@ -59,10 +54,10 @@ export class AuthService {
     const user = await User.findOne({
       where: { email },
       attributes: ['id', 'email', 'password', 'name'],
-      raw: true
+      raw: true,
     });
-    
-    console.log("user in login", user)
+
+    console.log('user in login', user);
     const isValid = user && (await comparePassword(password, user.password));
     if (!isValid) {
       throw new UnauthorizedException('Invalid credentials');
@@ -77,13 +72,8 @@ export class AuthService {
     const signOptions: SignOptions = {
       expiresIn: (jwtExpiresIn || '1h') as any,
     };
-    
 
-    const token = sign(
-      { id: user.id, email: user.email } as JwtPayload,
-      jwtSecret,
-      signOptions
-    );
+    const token = sign({ id: user.id, email: user.email } as JwtPayload, jwtSecret, signOptions);
 
     return { user, token };
   }
@@ -110,20 +100,20 @@ export class AuthService {
    * @returns User (without password) or null if invalid.
    */
   async validateUser(email: string, pass: string): Promise<any> {
-    const  user = await User.unscoped().findOne({ where: { email } });
-   
+    const user = await User.unscoped().findOne({ where: { email } });
+
     if (!user) {
       return null;
     }
     if (!user.password) {
       throw new Error('Password not found for user');
     }
-    console.log('user', user)
-    if (await comparePassword(pass, user.dataValues.password)) {
-      const { password, ...result } = user.toJSON();
+    if (await comparePassword(pass, String(user.dataValues.password))) {
+      const result = user.toJSON();
       return result;
     }
-    console.log('Invalid password')
+
+    console.log('Invalid password');
     return null;
   }
 }

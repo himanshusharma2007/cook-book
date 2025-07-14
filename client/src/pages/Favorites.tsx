@@ -6,10 +6,8 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFavorites } from '../redux/slices/favoritesSlice';
 import type { RootState } from '../redux/store';
-import { FaHeart } from 'react-icons/fa';
 import Loader from '../components/common/Loader';
 import RecipeCard from '../components/common/RecipeCard';
-import { useFavoriteToggle } from '../hooks/useFavoriteToggle';
 
 /**
  * Favorites page component.
@@ -43,9 +41,9 @@ const Favorites = () => {
                 recipe={recipe}
                 user={user}
                 showDeleteButton={false}
-                onUnfavorite={() => useFavoriteToggle(recipe.id).toggleFavorite()}
-                onViewDetails={() => (window.location.href = `/recipe/${recipe.id}`)}
-                
+                onViewDetails={() =>
+                  (window.location.href = `/recipe/${recipe.id}`)
+                }
               />
             ))
           ) : (

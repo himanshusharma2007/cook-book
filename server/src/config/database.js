@@ -26,15 +26,15 @@ const config = {
     database: process.env.DB_NAME || 'cookbook_db',
     host: process.env.DB_HOST || '',
     port: parseInt(process.env.DB_PORT || '5432'),
-    dialect: 'postgres',  
+    dialect: 'postgres',
     logging: false,
     dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false
-      }
-    }
-  }
+        rejectUnauthorized: false,
+      },
+    },
+  },
 };
 
 // Export for Sequelize CLI (CommonJS)

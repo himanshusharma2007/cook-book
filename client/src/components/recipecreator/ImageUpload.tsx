@@ -83,9 +83,7 @@ const ImageUpload = ({ setValue, watch, errors }: ImageUploadProps) => {
             <p className="text-gray-600 mb-2">
               Drop your image here or click to browse
             </p>
-            <p className="text-gray-400 text-sm">
-              PNG, JPG, GIF up to 10MB
-            </p>
+            <p className="text-gray-400 text-sm">PNG, JPG, GIF up to 10MB</p>
           </div>
         )}
         <input

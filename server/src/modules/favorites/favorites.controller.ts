@@ -25,7 +25,6 @@ import { getUserId } from 'src/utils/auth.utils';
  */
 @Controller('favorites')
 export class FavoritesController {
- 
   constructor(private favoritesService: FavoritesService) {}
 
   /**
@@ -57,7 +56,7 @@ export class FavoritesController {
       setResponseMeta(res, 'favoriteId', 'Recipe added to favorites');
 
       return favorite.id;
-    } catch (error : any) {
+    } catch (error: any) {
       if (error instanceof UnauthorizedException) throw error;
       throw new BadRequestException(error.message);
     }
@@ -84,7 +83,7 @@ export class FavoritesController {
       setResponseMeta(res, 'recipes', 'Favorites fetched successfully');
 
       return recipes;
-    } catch (error : any) {
+    } catch (error: any) {
       if (error instanceof UnauthorizedException) throw error;
       throw new BadRequestException(error.message);
     }
@@ -113,13 +112,12 @@ export class FavoritesController {
       const recipeId = parseInt(id, 10);
       if (isNaN(recipeId)) throw new BadRequestException('Invalid recipe ID');
 
-       
       await this.favoritesService.removeFavorite(recipeId, getUserId(req));
 
       setResponseMeta(res, 'message', 'Recipe removed from favorites');
 
       return null;
-    } catch (error : any) {
+    } catch (error: any) {
       if (error instanceof UnauthorizedException || error instanceof NotFoundException) throw error;
       throw new BadRequestException(error.message);
     }

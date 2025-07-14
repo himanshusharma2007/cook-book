@@ -12,7 +12,7 @@ npm-debug.log*
 
 # Docker stuff
 **/.dockerignore
-**/Dockerfile
+# **/Dockerfile
 
 # Build files
 **/build/

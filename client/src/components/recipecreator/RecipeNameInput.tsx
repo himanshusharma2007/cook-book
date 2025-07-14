@@ -2,7 +2,7 @@
  * RecipeNameInput component for entering recipe name with Forkify API suggestions.
  * Handles debounced search and suggestion selection.
  */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaSearch, FaExternalLinkAlt } from 'react-icons/fa';
 import axios from 'axios';
@@ -38,8 +38,16 @@ interface RecipeNameInputProps {
  * @param props - Component props.
  * @returns JSX.Element
  */
-const RecipeNameInput = ({ register, setValue, watch, errors, suggestionsRef }: RecipeNameInputProps) => {
-  const [recipeSuggestions, setRecipeSuggestions] = useState<ForkifyRecipe[]>([]);
+const RecipeNameInput = ({
+  register,
+  setValue,
+  watch,
+  errors,
+  suggestionsRef,
+}: RecipeNameInputProps) => {
+  const [recipeSuggestions, setRecipeSuggestions] = useState<ForkifyRecipe[]>(
+    []
+  );
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [fetchingRecipe, setFetchingRecipe] = useState(false);
@@ -58,7 +66,10 @@ const RecipeNameInput = ({ register, setValue, watch, errors, suggestionsRef }: 
     setSearchLoading(true);
     try {
       // Fetch recipe suggestions from Forkify API
-      const response = await axios.get<{ count: number; recipes: ForkifyRecipe[] }>(
+      const response = await axios.get<{
+        count: number;
+        recipes: ForkifyRecipe[];
+      }>(
         `https://forkify-api.herokuapp.com/api/search?q=${encodeURIComponent(query)}`
       );
       if (response.data.count > 0) {
@@ -71,7 +82,7 @@ const RecipeNameInput = ({ register, setValue, watch, errors, suggestionsRef }: 
     } catch {
       setRecipeSuggestions([]);
       setShowSuggestions(false);
-    //   toast.error('Failed to search recipes');
+      //   toast.error('Failed to search recipes');
     } finally {
       setSearchLoading(false);
     }
@@ -102,9 +113,15 @@ const RecipeNameInput = ({ register, setValue, watch, errors, suggestionsRef }: 
             : detailedRecipe.image_url;
           const response = await fetch(safeUrl);
           const blob = await response.blob();
-          thumbnailFile = new File([blob], `${detailedRecipe.title.replace(/[^a-zA-Z0-9]/g, '_')}.jpg`, { type: blob.type });
+          thumbnailFile = new File(
+            [blob],
+            `${detailedRecipe.title.replace(/[^a-zA-Z0-9]/g, '_')}.jpg`,
+            { type: blob.type }
+          );
         } catch {
-          toast.warning('Could not download recipe image, but other details were loaded');
+          toast.warning(
+            'Could not download recipe image, but other details were loaded'
+          );
         }
       }
       const basicInstructions = `
@@ -116,7 +133,11 @@ const RecipeNameInput = ({ register, setValue, watch, errors, suggestionsRef }: 
       setValue('name', detailedRecipe.title, { shouldValidate: true });
       setValue('instructions', basicInstructions, { shouldValidate: true });
       setValue('thumbnail', thumbnailFile, { shouldValidate: true });
-      setValue('ingredients', ingredientsList.map(value => ({ value })), { shouldValidate: true });
+      setValue(
+        'ingredients',
+        ingredientsList.map(value => ({ value })),
+        { shouldValidate: true }
+      );
       toast.success(
         `Recipe "${detailedRecipe.title}" loaded with ${ingredientsList.length} ingredients!`
       );
@@ -170,7 +191,7 @@ const RecipeNameInput = ({ register, setValue, watch, errors, suggestionsRef }: 
         )}
         {showSuggestions && recipeSuggestions.length > 0 && (
           <div className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg max-h-80 overflow-y-auto">
-            {recipeSuggestions.map((suggestion) => (
+            {recipeSuggestions.map(suggestion => (
               <div
                 key={suggestion.recipe_id}
                 className="p-4 hover:bg-orange-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors duration-200"

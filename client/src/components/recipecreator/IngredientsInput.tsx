@@ -21,7 +21,13 @@ interface IngredientsInputProps {
  * @param props - Component props.
  * @returns JSX.Element
  */
-const IngredientsInput = ({ fields, append, remove, register, errors }: IngredientsInputProps) => {
+const IngredientsInput = ({
+  fields,
+  append,
+  remove,
+  register,
+  errors,
+}: IngredientsInputProps) => {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
       <label className="flex items-center text-lg merriweather font-semibold text-gray-700 mb-4">
@@ -32,7 +38,9 @@ const IngredientsInput = ({ fields, append, remove, register, errors }: Ingredie
         {fields.map((field, index) => (
           <div key={field.id} className="flex items-center space-x-3">
             <div className="flex-shrink-0 w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-              <span className="text-orange-600 font-medium text-sm">{index + 1}</span>
+              <span className="text-orange-600 font-medium text-sm">
+                {index + 1}
+              </span>
             </div>
             <input
               type="text"
@@ -50,7 +58,9 @@ const IngredientsInput = ({ fields, append, remove, register, errors }: Ingredie
               </button>
             )}
             {errors.ingredients?.[index]?.value && (
-              <p className="text-red-500 text-sm mt-1">{errors.ingredients[index].value.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.ingredients[index].value.message}
+              </p>
             )}
           </div>
         ))}
@@ -64,7 +74,9 @@ const IngredientsInput = ({ fields, append, remove, register, errors }: Ingredie
         </button>
       </div>
       {errors.ingredients && !errors.ingredients[0] && (
-        <p className="text-red-500 text-sm mt-1">{errors.ingredients.message}</p>
+        <p className="text-red-500 text-sm mt-1">
+          {errors.ingredients.message}
+        </p>
       )}
     </div>
   );

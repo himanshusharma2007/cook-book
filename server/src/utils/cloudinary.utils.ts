@@ -32,7 +32,7 @@ export class CloudinaryUtils {
       if (publicId) {
         await cloudinary.uploader.destroy(publicId);
       }
-    } catch (error : any) {
+    } catch (error: any) {
       console.error('Error deleting image from Cloudinary:', error);
       throw error;
     }
@@ -43,7 +43,7 @@ export class CloudinaryUtils {
       const segments = url.split('/');
       const lastSegment = segments[segments.length - 1];
       return lastSegment.split('.')[0];
-    } catch (error : any) {
+    } catch (error: any) {
       console.error('Error extracting public ID:', error);
       return null;
     }

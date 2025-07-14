@@ -15,12 +15,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getMe } from './redux/slices/authSlice';
 import RecipeDetails from './pages/RecipeDetails';
 import Loader from './components/common/Loader';
+import { RootState } from 'redux/store';
 
 // Protected route wrapper
 // Fixed Protected route wrapper
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading, isInitialized } = useSelector(
-    (state: any) => state.auth
+    (state: RootState) => state.auth
   );
 
   // Show loader while auth state is being initialized or during loading
@@ -38,7 +39,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const App = () => {
   const dispatch = useDispatch();
   const { loading, user, isInitialized } = useSelector(
-    (state: any) => state.auth
+    (state: RootState) => state.auth
   );
 
   useEffect(() => {

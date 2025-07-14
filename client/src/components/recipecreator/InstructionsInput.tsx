@@ -20,7 +20,11 @@ interface InstructionsInputProps {
  * @param props - Component props.
  * @returns JSX.Element
  */
-const InstructionsInput = ({ setValue, watch, errors }: InstructionsInputProps) => {
+const InstructionsInput = ({
+  setValue,
+  watch,
+  errors,
+}: InstructionsInputProps) => {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
       <label className="flex items-center text-lg merriweather font-semibold text-gray-700 mb-4">
@@ -30,11 +34,15 @@ const InstructionsInput = ({ setValue, watch, errors }: InstructionsInputProps) 
       <div className="min-h-[300px]">
         <QuillEditor
           value={watch('instructions')}
-          onChange={value => setValue('instructions', value, { shouldValidate: true })}
+          onChange={value =>
+            setValue('instructions', value, { shouldValidate: true })
+          }
         />
       </div>
       {errors.instructions && (
-        <p className="text-red-500 text-sm mt-1">{errors.instructions.message}</p>
+        <p className="text-red-500 text-sm mt-1">
+          {errors.instructions.message}
+        </p>
       )}
     </div>
   );

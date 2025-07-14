@@ -31,7 +31,12 @@ interface RecipeHeaderProps {
  * @param props - Component props.
  * @returns JSX.Element
  */
-const RecipeHeader = ({ recipe, user, onShare, onDelete }: RecipeHeaderProps) => {
+const RecipeHeader = ({
+  recipe,
+  user,
+  onShare,
+  onDelete,
+}: RecipeHeaderProps) => {
   const dispatch = useDispatch();
   const { toggleFavorite } = useFavoriteToggle(recipe.id);
   const favorites = useSelector((state: RootState) => state.favorites.recipes);

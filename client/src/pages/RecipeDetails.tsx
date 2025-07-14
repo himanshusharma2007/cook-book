@@ -5,17 +5,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  Heart,
-  ChefHat,
-  Users,
-  Calendar,
-  ArrowLeft,
-  Share2,
-  CheckCircle,
-  Circle,
-  Trash2,
-} from 'lucide-react';
+import { ChefHat, ArrowLeft } from 'lucide-react';
 import {
   getRecipeById,
   deleteRecipe,
@@ -24,13 +14,11 @@ import {
 import { getFavorites } from '../redux/slices/favoritesSlice';
 import { toast } from 'react-toastify';
 import type { RootState } from '../redux/store';
-import { GiCook } from 'react-icons/gi';
 import Loader from '../components/common/Loader';
 import RecipeHeader from '../components/recipedetails/RecipeHeader';
 import IngredientsSection from '../components/recipedetails/IngredientsSection';
 import InstructionsSection from '../components/recipedetails/InstructionsSection';
 import RecipeStats from '../components/recipedetails/RecipeStats';
-import { useFavoriteToggle } from '../hooks/useFavoriteToggle';
 
 interface RecipeDetailsType {
   id: number;
@@ -60,7 +48,6 @@ const RecipeDetails = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [recipe, setRecipe] = useState<RecipeDetailsType | null>(null);
   const [checkedIngredients, setCheckedIngredients] = useState<boolean[]>([]);
-  const [isOwner, setIsOwner] = useState(false);
 
   // Initialize data on component mount
   useEffect(() => {
@@ -72,7 +59,6 @@ const RecipeDetails = () => {
           setCheckedIngredients(
             new Array(recipeData.ingredients.length).fill(false)
           );
-          setIsOwner(user?.id === recipeData.postedBy);
         })
         .catch(() => {
           toast.error('Failed to load recipe details');
@@ -104,6 +90,7 @@ const RecipeDetails = () => {
         toast.success('Recipe deleted successfully');
         navigate('/');
       } catch (error) {
+        console.log('error', error);
         toast.error('Failed to delete recipe');
       }
     }
@@ -160,7 +147,8 @@ const RecipeDetails = () => {
             Recipe not found
           </h2>
           <p className="text-gray-500 mb-6">
-            The recipe you're looking for doesn't exist or has been removed.
+            The recipe you&apos;re looking for doesn&apos;t exist or has been
+            removed.
           </p>
           <button
             onClick={() => navigate('/')}
@@ -192,7 +180,6 @@ const RecipeDetails = () => {
           <RecipeHeader
             recipe={recipe}
             user={user}
-            onFavorite={() => useFavoriteToggle(recipe.id).toggleFavorite()}
             onShare={handleShare}
             onDelete={handleDeleteRecipe}
           />

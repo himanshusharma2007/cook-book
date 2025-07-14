@@ -29,16 +29,23 @@ interface RecipeForm {
 /**
  * Yup validation schema for recipe form.
  */
-const schema = yup.object({
-  name: yup.string().trim().required('Recipe name is required'),
-  instructions: yup.string().trim().required('Instructions are required'),
-  thumbnail: yup.mixed().test('file', 'Recipe image is required', value => value instanceof File),
-  ingredients: yup.array().of(
-    yup.object({
-      value: yup.string().trim().required('Ingredient cannot be empty'),
-    })
-  ).min(1, 'At least one ingredient is required'),
-}).required();
+const schema = yup
+  .object({
+    name: yup.string().trim().required('Recipe name is required'),
+    instructions: yup.string().trim().required('Instructions are required'),
+    thumbnail: yup
+      .mixed()
+      .test('file', 'Recipe image is required', value => value instanceof File),
+    ingredients: yup
+      .array()
+      .of(
+        yup.object({
+          value: yup.string().trim().required('Ingredient cannot be empty'),
+        })
+      )
+      .min(1, 'At least one ingredient is required'),
+  })
+  .required();
 
 /**
  * RecipeCreator page component.
@@ -49,7 +56,14 @@ const RecipeCreator = () => {
   const { loading, error } = useSelector((state: RootState) => state.recipes);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
-  const { register, control, handleSubmit, setValue, watch, formState: { errors } } = useForm<RecipeForm>({
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<RecipeForm>({
     resolver: yupResolver(schema),
     defaultValues: {
       name: '',
@@ -90,13 +104,15 @@ const RecipeCreator = () => {
     formData.append('instructions', data.instructions);
     formData.append(
       'ingredients',
-      JSON.stringify(data.ingredients.map(ing => ing.value).filter(ing => ing.trim()))
+      JSON.stringify(
+        data.ingredients.map(ing => ing.value).filter(ing => ing.trim())
+      )
     );
     if (data.thumbnail) {
       formData.append('thumbnail', data.thumbnail);
     }
     try {
-      await dispatch(createRecipe(formData as any)).unwrap();
+      await dispatch(createRecipe(formData as unknown))?.unwrap();
       toast.success('Recipe created successfully!');
       setValue('name', '');
       setValue('instructions', '');
@@ -136,11 +152,7 @@ const RecipeCreator = () => {
                 errors={errors}
                 suggestionsRef={suggestionsRef}
               />
-              <ImageUpload
-                setValue={setValue}
-                watch={watch}
-                errors={errors}
-              />
+              <ImageUpload setValue={setValue} watch={watch} errors={errors} />
             </div>
             <div className="space-y-6">
               <IngredientsInput
