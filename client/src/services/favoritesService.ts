@@ -6,6 +6,11 @@ interface FavoritesResponse {
 }
 
 export const favoritesService = {
+  /**
+   * Adds a recipe to favorites.
+   * @param recipeId - The ID of the recipe to favorite.
+   * @returns Promise<{ message: string; favoriteId: number }>
+   */
   addFavorite: async (
     recipeId: number
   ): Promise<{ message: string; favoriteId: number }> => {
@@ -19,6 +24,10 @@ export const favoritesService = {
     }
   },
 
+  /**
+   * Fetches user's favorite recipes.
+   * @returns Promise<FavoritesResponse>
+   */
   getFavorites: async (): Promise<FavoritesResponse> => {
     try {
       const response = await api.get('/favorites');
@@ -30,6 +39,11 @@ export const favoritesService = {
     }
   },
 
+  /**
+   * Removes a recipe from favorites.
+   * @param recipeId - The ID of the recipe to remove.
+   * @returns Promise<{ message: string }>
+   */
   removeFavorite: async (recipeId: number): Promise<{ message: string }> => {
     try {
       const response = await api.delete(`/favorites/${recipeId}`);
