@@ -71,7 +71,7 @@ const RecipeNameInput = ({ register, setValue, watch, errors, suggestionsRef }: 
     } catch {
       setRecipeSuggestions([]);
       setShowSuggestions(false);
-      toast.error('Failed to search recipes');
+    //   toast.error('Failed to search recipes');
     } finally {
       setSearchLoading(false);
     }
