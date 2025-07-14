@@ -6,15 +6,15 @@ import { Recipe } from "./recipe.model";
 export class Favorite extends Model {
   @ForeignKey(() => User)
   @Column({ type: DataType.INTEGER, allowNull: false })
-  userId: number;
+  userId!: number;
 
   @ForeignKey(() => Recipe)
   @Column({ type: DataType.INTEGER, allowNull: false })
-  recipeId: number;
+  recipeId!: number;
 
   @BelongsTo(() => User)
-  user: User;
+  user!: User;
 
   @BelongsTo(() => Recipe)
-  recipe: Recipe;
+  recipe!: Recipe;
 }

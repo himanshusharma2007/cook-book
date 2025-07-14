@@ -33,10 +33,18 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
-      req.user = decoded;
-      return true;
-    } catch (error) {
+      if (!process.env.JWT_SECRET) {
+        throw new Error('JWT_SECRET is not defined in environment variables');
+      }
+      if (typeof token === 'string') {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
+        req.user = decoded;
+        return true;
+      } else {
+        throw new UnauthorizedException('Invalid token');
+      }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error : any) {
       throw new UnauthorizedException('Invalid token');
     }
   }

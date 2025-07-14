@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { Favorite } from "../models/favorite.model";
 import { Recipe } from "../models/recipe.model";
-import { User } from "../models/user.model";
 
 @Injectable()
 export class FavoritesService {

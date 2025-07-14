@@ -15,6 +15,7 @@ export class RecipesService {
     if (typeof ingredients === 'string') {
       try {
         parsedIngredients = JSON.parse(ingredients);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         throw new BadRequestException('Invalid ingredients format. Please provide a valid JSON array.');
       }

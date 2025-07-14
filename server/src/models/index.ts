@@ -21,7 +21,7 @@ export const initializeDatabase = async () => {
     await sequelize.authenticate();
     console.log("Database connection established successfully.");
     await sequelize.sync({ alter: true }); // Adjusts tables, use { force: true } only for testing
-  } catch (error) {
+  } catch (error : any) {
     console.error("Unable to connect to the database:", error);
     process.exit(1);
   }

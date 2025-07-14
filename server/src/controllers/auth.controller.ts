@@ -15,7 +15,7 @@ export class AuthController {
             const { user, token } = await this.authService.register(createUserDto);
             res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none", });
             return { success: true, user: { id: user.id, name: user.name, email: user.email }, message: "User registered successfully" };
-        } catch (error) {
+        } catch (error : any) {
             throw new BadRequestException(error.message);
         }
     }
@@ -27,7 +27,7 @@ export class AuthController {
             const { user, token } = await this.authService.login(loginDto);
             res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "none", });
             return { success: true, user: { id: user.id, name: user.name, email: user.email }, message: "Login successful" };
-        } catch (error) {
+        } catch (error : any) {
             throw new UnauthorizedException(error.message);
         }
     }
@@ -40,7 +40,7 @@ export class AuthController {
             if (!req.user) throw new UnauthorizedException("Unauthorized");
             const user = await this.authService.getMe(req.user.id);
             return { success: true, user };
-        } catch (error) {
+        } catch (error : any) {
             if (error instanceof UnauthorizedException) throw error;
             throw new NotFoundException(error.message);
         }
@@ -57,7 +57,8 @@ export class AuthController {
                 sameSite: 'none'
             });
             return { success: true, message: "Logged out successfully" };
-        } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error : any) {
             throw new InternalServerErrorException("Logout failed");
         }
     }

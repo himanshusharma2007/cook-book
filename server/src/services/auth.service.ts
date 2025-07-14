@@ -16,9 +16,11 @@ export class AuthService {
 
     const hashedPassword = await hashPassword(password);
     const user = await User.create({ name, email, password: hashedPassword });
-
+    if (!process.env.JWT_SECRET || !process.env.JWT_EXPIRES_IN) {
+      throw new Error('JWT_SECRET is not defined in environment variables');
+    }
     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN,
+      expiresIn: parseInt(process.env.JWT_EXPIRES_IN, 10),
     });
 
     return { user, token };
@@ -31,9 +33,13 @@ export class AuthService {
     if (!user || !(await comparePassword(password, user.password))) {
       throw new UnauthorizedException("Invalid credentials");
     }
+    if (!process.env.JWT_SECRET || !process.env.JWT_EXPIRES_IN) {
+      throw new Error('JWT_SECRET is not defined in environment variables');
+    }
+    
 
     const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN,
+      expiresIn: parseInt(process.env.JWT_EXPIRES_IN, 10),
     });
 
     return { user, token };

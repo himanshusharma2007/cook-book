@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Query, Param, Delete, Req, UseGuards, HttpCode, HttpStatus, Res, UseInterceptors, UploadedFile, UnauthorizedException, BadRequestException, NotFoundException, InternalServerErrorException } from "@nestjs/common";
+import { Controller, Post, Body, Get, Query, Param, Delete, Req, UseGuards, HttpCode, HttpStatus, UseInterceptors, UploadedFile, UnauthorizedException, BadRequestException, NotFoundException, InternalServerErrorException } from "@nestjs/common";
 import { RecipesService } from "../services/recipes.service";
 import { Recipe } from "../models/recipe.model";
 import { Request, Response } from "express";
@@ -25,9 +25,7 @@ export class RecipesController {
   async create(
     @UploadedFile() file: Express.Multer.File,
     @Body() createRecipeDto: Partial<Recipe>,
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response
-  ) {
+    @Req() req: Request  ) {
     try {
       if (!req.user) {
         throw new UnauthorizedException("Unauthorized");
@@ -46,7 +44,7 @@ export class RecipesController {
         },
         message: "Recipe created successfully"
       };
-    } catch (error) {
+    } catch (error : any) {
       if (error instanceof UnauthorizedException) throw error;
       throw new BadRequestException(error.message);
     }
@@ -61,7 +59,7 @@ export class RecipesController {
       const limitNum = parseInt(limit ?? "10");
       const { recipes, total } = await this.recipesService.findAll(search, pageNum, limitNum);
       return { success: true, recipes, total, page: pageNum, limit: limitNum };
-    } catch (error) {
+    } catch (error : any) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -82,7 +80,7 @@ export class RecipesController {
       const limitNum = parseInt(limit ?? "10");
       const { recipes, total } = await this.recipesService.findByUser(req.user.id, pageNum, limitNum);
       return { success: true, recipes, total, page: pageNum, limit: limitNum };
-    } catch (error) {
+    } catch (error : any) {
       throw new InternalServerErrorException(error.message);
     }
   }
@@ -110,7 +108,7 @@ export class RecipesController {
 
       await this.recipesService.deleteRecipe(parseInt(id), req.user.id);
       return { success: true, message: "Recipe deleted successfully" };
-    } catch (error) {
+    } catch (error : any) {
       if (error instanceof UnauthorizedException || error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException(error.message);
     }
@@ -129,7 +127,7 @@ export class RecipesController {
         throw new NotFoundException("Recipe not found");
       }
       return { success: true, recipe };
-    } catch (error) {
+    } catch (error :any) {
       if (error instanceof UnauthorizedException || error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException(error.message);
     }

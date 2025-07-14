@@ -16,7 +16,7 @@ export class FavoritesController {
       const recipeId = parseInt(id);
       const favorite = await this.favoritesService.addFavorite(recipeId, req.user.id);
       return { success: true, message: "Recipe added to favorites", favoriteId: favorite.id };
-    } catch (error) {
+    } catch (error : any) {
       if (error instanceof UnauthorizedException) throw error;
       throw new BadRequestException(error.message);
     }
@@ -30,7 +30,7 @@ export class FavoritesController {
       if (!req.user) throw new UnauthorizedException("Unauthorized");
       const recipes = await this.favoritesService.findAll(req.user.id);
       return { success: true, recipes };
-    } catch (error) {
+    } catch (error : any) {
       if (error instanceof UnauthorizedException) throw error;
       throw new InternalServerErrorException(error.message);
     }
@@ -45,7 +45,7 @@ export class FavoritesController {
       const recipeId = parseInt(id);
       await this.favoritesService.removeFavorite(recipeId, req.user.id);
       return { success: true, message: "Recipe removed from favorites" };
-    } catch (error) {
+    } catch (error : any) {
       if (error instanceof UnauthorizedException) throw error;
       throw new NotFoundException(error.message);
     }
