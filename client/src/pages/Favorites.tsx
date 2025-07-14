@@ -1,31 +1,32 @@
+/**
+ * Favorites page component displaying a user's favorite recipes.
+ * Fetches favorite recipes on mount and allows unfavoriting or viewing details.
+ */
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getFavorites, removeFavorite } from '../redux/slices/favoritesSlice';
+import { getFavorites } from '../redux/slices/favoritesSlice';
 import type { RootState } from '../redux/store';
-import { toast } from 'react-toastify';
 import { FaHeart } from 'react-icons/fa';
-import Loader from '../components/Loader';
+import Loader from '../components/common/Loader';
+import RecipeCard from '../components/common/RecipeCard';
+import { useFavoriteToggle } from '../hooks/useFavoriteToggle';
 
+/**
+ * Favorites page component.
+ * @returns JSX.Element
+ */
 const Favorites = () => {
   const dispatch = useDispatch();
-  const { recipes, loading } = useSelector(
+  const { recipes, loading, error } = useSelector(
     (state: RootState) => state.favorites
   );
   const { user } = useSelector((state: RootState) => state.auth);
-  console.log('user', user);
+
+  // Fetch favorites on mount if user is logged in
   useEffect(() => {
     if (user) dispatch(getFavorites());
   }, [dispatch, user]);
 
-  const handleUnfavorite = (id: number) => {
-    dispatch(removeFavorite(id));
-    toast.info(`Removed recipe ${id} from favorites!`);
-  };
-
-  const handleViewDetails = (recipeId: number) => {
-    // Navigate to recipe details page
-    window.location.href = `/recipe/${recipeId}`;
-  };
   if (loading) return <Loader />;
 
   return (
@@ -37,48 +38,15 @@ const Favorites = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {recipes.length > 0 ? (
             recipes.map(recipe => (
-              <div
+              <RecipeCard
                 key={recipe.id}
-                className="bg-white relative  rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 flex flex-col justify-between"
-              >
-                {/* <div className="absolute top-3 right-3 flex gap-2">
-                  {user && user.id === recipe.postedBy && (
-                    <button
-                      onClick={() => handleDeleteRecipe(recipe.id)}
-                      className="p-2 rounded-full bg-white text-gray-600 hover:bg-red-50 hover:text-red-500 transition-all duration-200"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  )}
-                </div> */}
-                <img
-                  src={recipe.thumbnail}
-                  alt={recipe.name}
-                  className="w-full h-48 object-cover rounded-t-2xl"
-                />
-                <div className="p-4 flex flex-col flex-grow">
-                  <h3 className="text-lg merriweather font-semibold text-gray-800 mb-2 line-clamp-2">
-                    {recipe.name}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    By: {recipe.postedBy}
-                  </p>
-                  <div className="mt-auto flex flex-col justify-between gap-2">
-                    <button
-                      onClick={() => handleUnfavorite(recipe.id)}
-                      className="flex-1 bg-red-500 text-white py-2 rounded-xl font-medium hover:bg-red-600 transition-all duration-200"
-                    >
-                      <FaHeart className="inline mr-2" /> Remove Favorite
-                    </button>
-                    <button
-                      onClick={() => handleViewDetails(recipe.id)}
-                      className="w-full bg-gradient-to-r  from-orange-500 to-red-500 text-white py-3 rounded-xl font-medium hover:from-orange-600 hover:to-red-600 transition-all duration-200 transform hover:scale-105"
-                    >
-                      View Recipe
-                    </button>
-                  </div>
-                </div>
-              </div>
+                recipe={recipe}
+                user={user}
+                showDeleteButton={false}
+                onUnfavorite={() => useFavoriteToggle(recipe.id).toggleFavorite()}
+                onViewDetails={() => (window.location.href = `/recipe/${recipe.id}`)}
+                
+              />
             ))
           ) : (
             <div className="col-span-full text-center py-20">

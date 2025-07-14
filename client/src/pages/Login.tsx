@@ -1,19 +1,48 @@
-import { useState, useEffect } from 'react';
-import { FaUser, FaLock } from 'react-icons/fa';
+/**
+ * Login page component for user authentication.
+ * Uses React Hook Form with Yup validation for email and password input.
+ */
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import type { RootState } from '../redux/store';
 import { toast } from 'react-toastify';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { FaUser, FaLock } from 'react-icons/fa';
 
+/**
+ * Form data interface for login.
+ */
+interface LoginForm {
+  email: string;
+  password: string;
+}
+
+/**
+ * Yup validation schema for login form.
+ */
+const schema = yup.object({
+  email: yup.string().email('Invalid email').required('Email is required'),
+  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+}).required();
+
+/**
+ * Login page component.
+ * @returns JSX.Element
+ */
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loading, error, user } = useSelector(
     (state: RootState) => state.auth
   );
-  const navigate = useNavigate();
+
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
+    resolver: yupResolver(schema),
+  });
 
   // Redirect if user is already logged in
   useEffect(() => {
@@ -22,25 +51,26 @@ const Login = () => {
     }
   }, [user, navigate]);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  /**
+   * Handle form submission for login.
+   * @param data - Form data containing email and password.
+   */
+  const onSubmit = async (data: LoginForm) => {
     try {
-      await dispatch(loginUser({ email, password })).unwrap();
+      await dispatch(loginUser(data)).unwrap();
       toast.success('Login successful!');
-      // Don't navigate here - let the useEffect handle it when user state updates
     } catch (err) {
-      console.log('error while logging in', error);
       toast.error(err || 'Login failed');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white  flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6">
-        <h1 className=" text-3xl merriweather font-bold text-center text-gray-800">
+        <h1 className="text-3xl merriweather font-bold text-center text-gray-800">
           Login
         </h1>
-        <h2 className=" text-xl dancing-script font-bold text-center text-red-800">
+        <h2 className="text-xl dancing-script font-bold text-center text-red-800">
           Welcome to CookBook
         </h2>
         {error && (
@@ -50,28 +80,30 @@ const Login = () => {
               error}
           </p>
         )}
-        <form onSubmit={handleLogin} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="relative">
             <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="email"
               placeholder="Email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              {...register('email')}
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              required
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+            )}
           </div>
           <div className="relative">
             <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="password"
               placeholder="Password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              {...register('password')}
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              required
             />
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+            )}
           </div>
           <button
             type="submit"

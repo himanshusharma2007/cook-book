@@ -14,7 +14,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getMe } from './redux/slices/authSlice';
 import RecipeDetails from './pages/RecipeDetails';
-import Loader from './components/Loader';
+import Loader from './components/common/Loader';
 
 // Protected route wrapper
 // Fixed Protected route wrapper
