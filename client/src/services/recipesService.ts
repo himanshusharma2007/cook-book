@@ -1,80 +1,99 @@
 import api from './api';
+import {  RecipeResponse, RecipeDetails } from 'types';
 
-// Types
-interface RegisterData {
-  name: string;
-  email: string;
-  password: string;
-}
 
-interface LoginData {
-  email: string;
-  password: string;
-}
 
-interface AuthResponse {
-  user: { id: number; name: string; email: string };
-  message: string;
-}
-
-interface UserResponse {
-  user: { id: number; name: string; email: string };
-}
-
-export const authService = {
+export const recipesService = {
   /**
-   * Registers a new user.
-   * @param data - User registration data.
-   * @returns Promise<AuthResponse>
+   * Creates a new recipe.
+   * @param data - Recipe data in FormData format.
+   * @returns Promise<RecipeResponse>
    */
-  register: async (data: RegisterData): Promise<AuthResponse> => {
+  createRecipe: async (data: FormData): Promise<RecipeResponse> => {
     try {
-      const response = await api.post('/auth/register', data);
+      const response = await api.post('/recipes', data);
       return response.data;
-    } catch (error) {
-      throw new Error(error.response?.data?.message || 'Registration failed');
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to create recipe');
     }
   },
 
   /**
-   * Logs in a user.
-   * @param data - User login credentials.
-   * @returns Promise<AuthResponse>
+   * Fetches recipes with optional search and pagination.
+   * @param search - Optional search term.
+   * @param page - Optional page number.
+   * @param limit - Optional limit per page.
+   * @returns Promise containing recipes and pagination info.
    */
-  login: async (data: LoginData): Promise<AuthResponse> => {
+  getRecipes: async (
+    search?: string,
+    page?: number,
+    limit?: number
+  ): Promise<{
+    recipes: RecipeResponse[];
+    total: number;
+    page: number;
+    limit: number;
+  }> => {
     try {
-      console.log('check');
-      const response = await api.post('/auth/login', data);
+      const response = await api.get('/recipes', {
+        params: { search, page, limit },
+      });
       return response.data;
-    } catch (error) {
-      console.log('error', error);
-      throw new Error(error.response?.data?.message || 'Login failed');
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch recipes');
     }
   },
 
   /**
-   * Fetches current user data.
-   * @returns Promise<UserResponse>
+   * Fetches the current user's recipes with pagination.
+   * @param page - Optional page number.
+   * @param limit - Optional limit per page.
+   * @returns Promise containing recipes and pagination info.
    */
-  getMe: async (): Promise<UserResponse> => {
+  getMyRecipes: async (
+    page?: number,
+    limit?: number
+  ): Promise<{
+    recipes: RecipeResponse[];
+    total: number;
+    page: number;
+    limit: number;
+  }> => {
     try {
-      const response = await api.get('/auth/me');
+      const response = await api.get('/recipes/my', {
+        params: { page, limit },
+      });
       return response.data;
-    } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to fetch user');
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch your recipes');
     }
   },
 
   /**
-   * Logs out the current user.
-   * @returns Promise<{ message: string }>
+   * Deletes a recipe by ID.
+   * @param id - Recipe ID.
+   * @returns Promise<void>
    */
-  logout: async (): Promise<{ message: string }> => {
+  deleteRecipe: async (id: number): Promise<void> => {
     try {
-      const response = await api.post('/auth/logout');
+      await api.delete(`/recipes/${id}`);
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to delete recipe');
+    }
+  },
+
+  /**
+   * Fetches a recipe by ID.
+   * @param id - Recipe ID.
+   * @returns Promise<RecipeDetails>
+   */
+  getRecipeById: async (id: number): Promise<RecipeDetails> => {
+    try {
+      const response = await api.get(`/recipes/${id}`);
       return response.data;
-    } catch (error) {
-      throw new Error(error.response?.data?.message || 'Logout failed');
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch recipe');
     }
   },
 };

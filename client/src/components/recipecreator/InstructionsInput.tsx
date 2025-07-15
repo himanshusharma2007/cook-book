@@ -5,26 +5,15 @@
 import { useFormContext } from 'react-hook-form';
 import { FaFileAlt } from 'react-icons/fa';
 import QuillEditor from '../common/QuillEditor';
-
-/**
- * Props for InstructionsInput component.
- */
-interface InstructionsInputProps {
-  setValue: ReturnType<typeof useFormContext>['setValue'];
-  watch: ReturnType<typeof useFormContext>['watch'];
-  errors: ReturnType<typeof useFormContext>['formState']['errors'];
-}
+import { RecipeForm } from 'types';
 
 /**
  * InstructionsInput component.
- * @param props - Component props.
  * @returns JSX.Element
  */
-const InstructionsInput = ({
-  setValue,
-  watch,
-  errors,
-}: InstructionsInputProps) => {
+const InstructionsInput = () => {
+  const { setValue, watch, formState: { errors } } = useFormContext<RecipeForm>();
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
       <label className="flex items-center text-lg merriweather font-semibold text-gray-700 mb-4">

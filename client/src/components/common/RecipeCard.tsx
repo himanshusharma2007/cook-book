@@ -4,17 +4,11 @@ import type { RootState } from '../../redux/store';
 import { useSelector } from 'react-redux';
 import { useFavoriteToggle } from '../../hooks/useFavoriteToggle';
 import clsx from 'clsx';
+import { Recipe } from 'types';
 
 /**
  * Recipe interface for card display.
  */
-interface Recipe {
-  id: number;
-  name: string;
-  thumbnail: string;
-  postedBy: number;
-  user?: { name: string };
-}
 
 /**
  * Props for RecipeCard component.
@@ -48,7 +42,7 @@ const RecipeCard = ({
     <div className="bg-white relative rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 flex flex-col justify-between">
       <div className="relative">
         <img
-          src={recipe.thumbnail}
+          src={recipe.thumbnail !== null ? recipe.thumbnail : ''}
           alt={recipe.name}
           className="w-full h-48 object-cover rounded-t-2xl"
         />

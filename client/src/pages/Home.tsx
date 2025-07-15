@@ -17,13 +17,16 @@ import Loader from '../components/common/Loader';
 import SearchBar from '../components/common/SearchBar';
 import RecipeCard from '../components/common/RecipeCard';
 import LoadMoreButton from '../components/common/LoadMoreButton';
+import { AppDispatch } from '../redux/store'; // Import AppDispatch
+import { Recipe, RecipeResponse } from 'types';
+
 
 /**
  * Home page component.
  * @returns JSX.Element
  */
 const Home = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>(); // Use typed dispatch
   const { recipes, loading, error, total, page, limit } = useSelector(
     (state: RootState) => state.recipes
   );
@@ -57,8 +60,8 @@ const Home = () => {
       try {
         await dispatch(deleteRecipe(recipeId)).unwrap();
         toast.success('Recipe deleted successfully');
-      } catch (error: Error) {
-        toast.error('Failed to delete recipe', error.message || '');
+      } catch (error: any) {
+        toast.error(error.message || 'Failed to delete recipe');
       }
     }
   };
@@ -125,19 +128,28 @@ const Home = () => {
         </div>
         {loading && recipes.length === 0 && <Loader />}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {recipes.map(recipe => (
-            <RecipeCard
-              key={recipe.id}
-              recipe={recipe}
-              user={user}
-              showDeleteButton={activeFilter === 'my'}
-              // onUnfavorite={() => useFavoriteToggle(recipe.id).toggleFavorite()}
-              onViewDetails={() =>
-                (window.location.href = `/recipe/${recipe.id}`)
-              }
-              onDelete={() => handleDeleteRecipe(recipe.id)}
-            />
-          ))}
+          {recipes.map((recipeResponse: RecipeResponse) => {
+            const recipe: Recipe = {
+              id: recipeResponse.id,
+              name: recipeResponse.name,
+              thumbnail: recipeResponse.thumbnail,
+              postedBy: recipeResponse.postedBy,
+              instructions: recipeResponse.instructions,
+              ingredients: recipeResponse.ingredients,
+            };
+            return (
+              <RecipeCard
+                key={recipe.id}
+                recipe={recipe}
+                user={user}
+                showDeleteButton={activeFilter === 'my'}
+                onViewDetails={() =>
+                  (window.location.href = `/recipe/${recipe.id}`)
+                }
+                onDelete={() => handleDeleteRecipe(recipe.id)}
+              />
+            );
+          })}
         </div>
         {recipes.length < total && (
           <LoadMoreButton loading={loading} onLoadMore={handleLoadMore} />

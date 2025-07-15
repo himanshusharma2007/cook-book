@@ -15,16 +15,8 @@ import RecipeNameInput from '../components/recipecreator/RecipeNameInput';
 import ImageUpload from '../components/recipecreator/ImageUpload';
 import IngredientsInput from '../components/recipecreator/IngredientsInput';
 import InstructionsInput from '../components/recipecreator/InstructionsInput';
-
-/**
- * Form data interface for recipe creation.
- */
-interface RecipeForm {
-  name: string;
-  instructions: string;
-  thumbnail: File | null;
-  ingredients: { value: string }[];
-}
+import { AppDispatch } from '../redux/store';
+import { RecipeForm } from 'types';
 
 /**
  * Yup validation schema for recipe form.
@@ -33,9 +25,7 @@ const schema = yup
   .object({
     name: yup.string().trim().required('Recipe name is required'),
     instructions: yup.string().trim().required('Instructions are required'),
-    thumbnail: yup
-      .mixed()
-      .test('file', 'Recipe image is required', value => value instanceof File),
+    thumbnail: yup.mixed<File>().nullable().required('Recipe image is required'),
     ingredients: yup
       .array()
       .of(
@@ -46,13 +36,12 @@ const schema = yup
       .min(1, 'At least one ingredient is required'),
   })
   .required();
-
 /**
  * RecipeCreator page component.
  * @returns JSX.Element
  */
 const RecipeCreator = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.recipes);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
@@ -64,7 +53,7 @@ const RecipeCreator = () => {
     watch,
     formState: { errors },
   } = useForm<RecipeForm>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver<RecipeForm, object, RecipeForm>(schema),
     defaultValues: {
       name: '',
       instructions: '',
@@ -112,14 +101,14 @@ const RecipeCreator = () => {
       formData.append('thumbnail', data.thumbnail);
     }
     try {
-      await dispatch(createRecipe(formData as unknown))?.unwrap();
+      await dispatch(createRecipe(formData)).unwrap();
       toast.success('Recipe created successfully!');
       setValue('name', '');
       setValue('instructions', '');
       setValue('thumbnail', null);
       setValue('ingredients', [{ value: '' }]);
-    } catch (err) {
-      toast.error(err || 'Failed to create recipe');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to create recipe');
     }
   };
 
@@ -145,30 +134,14 @@ const RecipeCreator = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="space-y-6">
-              <RecipeNameInput
-                register={register}
-                setValue={setValue}
-                watch={watch}
-                errors={errors}
-                suggestionsRef={suggestionsRef}
-              />
-              <ImageUpload setValue={setValue} watch={watch} errors={errors} />
+              <RecipeNameInput suggestionsRef={suggestionsRef} />
+              <ImageUpload />
             </div>
             <div className="space-y-6">
-              <IngredientsInput
-                fields={fields}
-                append={append}
-                remove={remove}
-                register={register}
-                errors={errors}
-              />
+              <IngredientsInput fields={fields} append={append} remove={remove} />
             </div>
           </div>
-          <InstructionsInput
-            setValue={setValue}
-            watch={watch}
-            errors={errors}
-          />
+          <InstructionsInput />
           <div className="flex justify-center">
             <button
               type="submit"

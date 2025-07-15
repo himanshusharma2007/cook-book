@@ -4,23 +4,21 @@
  */
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUser } from '../redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
-import type { RootState } from '../redux/store';
+import type { AppDispatch, RootState } from '../redux/store';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
+import { AnyAction, Dispatch } from '@reduxjs/toolkit';
+import { RegisterData } from 'types';
+import { register } from 'redux/slices/authSlice';
 
 /**
  * Form data interface for registration.
  */
-interface RegisterForm {
-  name: string;
-  email: string;
-  password: string;
-}
+
 
 /**
  * Yup validation schema for registration form.
@@ -41,17 +39,17 @@ const schema = yup
  * @returns JSX.Element
  */
 const Register = () => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
+
   const navigate = useNavigate();
   const { loading, error, user } = useSelector(
     (state: RootState) => state.auth
   );
 
   const {
-    register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterForm>({
+  } = useForm<RegisterData>({
     resolver: yupResolver(schema),
   });
 
@@ -66,14 +64,14 @@ const Register = () => {
    * Handle form submission for registration.
    * @param data - Form data containing name, email, and password.
    */
-  const onSubmit = async (data: RegisterForm) => {
+  const onSubmit = async (data: RegisterData) => {
     try {
-      await dispatch(registerUser(data)).unwrap();
+      await dispatch(register(data)).unwrap();
       toast.success('Registration successful!');
       setTimeout(() => {
         navigate('/');
       }, 100);
-    } catch (err) {
+    } catch (err : any) {
       toast.error(err || 'Registration failed');
     }
   };
@@ -112,7 +110,7 @@ const Register = () => {
             <input
               type="email"
               placeholder="Email"
-              {...register('email')}
+              {...register('string')}
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
             />
             {errors.email && (
@@ -126,7 +124,7 @@ const Register = () => {
             <input
               type="password"
               placeholder="Password"
-              {...register('password')}
+              {...register('string')}
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
             />
             {errors.password && (

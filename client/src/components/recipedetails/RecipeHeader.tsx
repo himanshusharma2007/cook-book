@@ -6,15 +6,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Heart, Share2, Trash2 } from 'lucide-react';
 import type { RootState } from '../../redux/store';
 import { useFavoriteToggle } from '../../hooks/useFavoriteToggle';
+import { Recipe } from 'types';
 /**
  * Recipe interface for header display.
  */
-interface Recipe {
-  id: number;
-  name: string;
-  thumbnail: string;
-  postedBy: number;
-}
+
 
 /**
  * Props for RecipeHeader component.
@@ -43,14 +39,13 @@ const RecipeHeader = ({
   const isFavorite = favorites.some(fav => fav.id === recipe.id);
 
   const handleFavoriteToggle = () => {
-    dispatch(toggleFavorite(recipe.id));
+    toggleFavorite();
   };
-
   return (
     <div className="mb-8">
       <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-lg">
         <img
-          src={recipe.thumbnail}
+          src={recipe.thumbnail !== null ? recipe.thumbnail : ''}
           alt={recipe.name}
           className="w-full h-full object-cover"
         />

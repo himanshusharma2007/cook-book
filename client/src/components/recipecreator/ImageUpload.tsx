@@ -6,22 +6,14 @@ import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { FaImage, FaTimes } from 'react-icons/fa';
 import { BiUpload } from 'react-icons/bi';
-
-/**
- * Props for ImageUpload component.
- */
-interface ImageUploadProps {
-  setValue: ReturnType<typeof useFormContext>['setValue'];
-  watch: ReturnType<typeof useFormContext>['watch'];
-  errors: ReturnType<typeof useFormContext>['formState']['errors'];
-}
+import { RecipeForm } from 'types';
 
 /**
  * ImageUpload component.
- * @param props - Component props.
  * @returns JSX.Element
  */
-const ImageUpload = ({ setValue, watch, errors }: ImageUploadProps) => {
+const ImageUpload = () => {
+  const { setValue, watch, formState: { errors } } = useFormContext<RecipeForm>();
   const [dragOver, setDragOver] = useState(false);
   const thumbnail = watch('thumbnail');
   const previewUrl = thumbnail ? URL.createObjectURL(thumbnail) : null;

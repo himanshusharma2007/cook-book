@@ -7,6 +7,7 @@ import { useFormContext } from 'react-hook-form';
 import { FaSearch, FaExternalLinkAlt } from 'react-icons/fa';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { RecipeForm } from 'types';
 
 interface ForkifyRecipe {
   publisher: string;
@@ -26,10 +27,6 @@ interface ForkifyDetailResponse {
  * Props for RecipeNameInput component.
  */
 interface RecipeNameInputProps {
-  register: ReturnType<typeof useFormContext>['register'];
-  setValue: ReturnType<typeof useFormContext>['setValue'];
-  watch: ReturnType<typeof useFormContext>['watch'];
-  errors: ReturnType<typeof useFormContext>['formState']['errors'];
   suggestionsRef: React.RefObject<HTMLDivElement>;
 }
 
@@ -38,16 +35,9 @@ interface RecipeNameInputProps {
  * @param props - Component props.
  * @returns JSX.Element
  */
-const RecipeNameInput = ({
-  register,
-  setValue,
-  watch,
-  errors,
-  suggestionsRef,
-}: RecipeNameInputProps) => {
-  const [recipeSuggestions, setRecipeSuggestions] = useState<ForkifyRecipe[]>(
-    []
-  );
+const RecipeNameInput = ({ suggestionsRef }: RecipeNameInputProps) => {
+  const { register, setValue, watch, formState: { errors } } = useFormContext<RecipeForm>();
+  const [recipeSuggestions, setRecipeSuggestions] = useState<ForkifyRecipe[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [fetchingRecipe, setFetchingRecipe] = useState(false);
@@ -82,7 +72,6 @@ const RecipeNameInput = ({
     } catch {
       setRecipeSuggestions([]);
       setShowSuggestions(false);
-      //   toast.error('Failed to search recipes');
     } finally {
       setSearchLoading(false);
     }

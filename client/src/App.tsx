@@ -13,31 +13,30 @@ import Favorites from './pages/Favorites';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getMe } from './redux/slices/authSlice';
-import RecipeDetails from './pages/RecipeDetails';
 import Loader from './components/common/Loader';
-import { RootState } from 'redux/store';
+import { RootState } from './redux/store';
+import { AppDispatch } from './redux/store'; // Import AppDispatch for typed dispatch
+import RecipeDetails from 'pages/RecipeDetails';
 
 // Protected route wrapper
-// Fixed Protected route wrapper
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading, isInitialized } = useSelector(
     (state: RootState) => state.auth
   );
 
-  // Show loader while auth state is being initialized or during loading
   if (!isInitialized || loading) {
     return <Loader />;
   }
 
-  // Only redirect to login after initialization is complete and user is null
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
   return <>{children}</>;
 };
+
 const App = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>(); // Use typed dispatch
   const { loading, user, isInitialized } = useSelector(
     (state: RootState) => state.auth
   );
@@ -45,8 +44,7 @@ const App = () => {
   useEffect(() => {
     dispatch(getMe());
   }, [dispatch]);
-  console.log('isInitialized', isInitialized);
-  // Show full page loader while initial authentication check is in progress
+
   if (!isInitialized || (loading && user === null)) {
     return <Loader />;
   }

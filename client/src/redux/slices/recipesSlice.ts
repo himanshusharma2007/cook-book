@@ -1,9 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { recipesService } from '../../services/recipesService';
+import { recipesService } from 'services/recipesService';
+import { RecipeResponse } from 'types';
+
+// Define the recipe response type to match what the service returns
+
 
 interface RecipesState {
-  recipes: { id: number; name: string; postedBy: number }[];
+  recipes: RecipeResponse[];
   total: number;
   page: number;
   limit: number;
@@ -22,12 +26,7 @@ const initialState: RecipesState = {
 
 export const createRecipe = createAsyncThunk(
   'recipes/createRecipe',
-  async (formData: {
-    name: string;
-    instructions: string;
-    ingredients: string[];
-    thumbnail?: File;
-  }) => {
+  async (formData: FormData) => {
     // Debug logs for formData
     for (const [key, value] of formData.entries()) {
       if (key === 'thumbnail' && value instanceof File) {
@@ -38,17 +37,9 @@ export const createRecipe = createAsyncThunk(
         console.log(`key: ${key}, value:`, value);
       }
     }
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key === 'thumbnail' && value instanceof File) {
-        console.log(
-          `key: ${key}, value: File { name: ${value.name}, size: ${value.size} }`
-        );
-      } else {
-        console.log(`key: ${key}, value:`, value);
-      }
-    });
+    
     const res = await recipesService.createRecipe(formData);
-    return res; // Assuming res contains { recipe, message }
+    return res; // Assuming res contains the recipe data
   }
 );
 
@@ -84,7 +75,7 @@ export const getMyRecipes = createAsyncThunk(
 
 export const deleteRecipe = createAsyncThunk(
   'recipes/deleteRecipe',
-  async (id: numbe) => {
+  async (id: number) => {
     await recipesService.deleteRecipe(id);
     return id; // Return ID to filter out the deleted recipe
   }
@@ -92,9 +83,9 @@ export const deleteRecipe = createAsyncThunk(
 
 export const getRecipeById = createAsyncThunk(
   'recipes/getRecipeById',
-  async (id: numbe) => {
+  async (id: number) => {
     const res = await recipesService.getRecipeById(id);
-    return res; // Assuming res contains { success, recipe }
+    return res; // Assuming res contains the recipe data
   }
 );
 
@@ -119,7 +110,7 @@ const recipesSlice = createSlice({
         createRecipe.fulfilled,
         (
           state,
-          action: PayloadAction<{ id: number; name: string; postedBy: number }>
+          action: PayloadAction<RecipeResponse>
         ) => {
           state.loading = false;
           state.recipes.push(action.payload);
@@ -138,7 +129,7 @@ const recipesSlice = createSlice({
         (
           state,
           action: PayloadAction<{
-            recipes: { id: number; name: string; postedBy: number }[];
+            recipes: RecipeResponse[];
             total: number;
             page: number;
             limit: number;
@@ -177,7 +168,7 @@ const recipesSlice = createSlice({
         (
           state,
           action: PayloadAction<{
-            recipes: { id: number; name: string; postedBy: number }[];
+            recipes: RecipeResponse[];
             total: number;
             page: number;
             limit: number;
@@ -220,7 +211,7 @@ const recipesSlice = createSlice({
         getRecipeById.fulfilled,
         (
           state,
-          action: PayloadAction<{ id: number; name: string; postedBy: number }>
+          action: PayloadAction<RecipeResponse>
         ) => {
           state.loading = false;
           // Optionally add or update the recipe in the state

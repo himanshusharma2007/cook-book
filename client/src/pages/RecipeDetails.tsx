@@ -13,40 +13,25 @@ import {
 } from '../redux/slices/recipesSlice';
 import { getFavorites } from '../redux/slices/favoritesSlice';
 import { toast } from 'react-toastify';
-import type { RootState } from '../redux/store';
+import type { RootState, AppDispatch } from '../redux/store';
 import Loader from '../components/common/Loader';
 import RecipeHeader from '../components/recipedetails/RecipeHeader';
 import IngredientsSection from '../components/recipedetails/IngredientsSection';
 import InstructionsSection from '../components/recipedetails/InstructionsSection';
 import RecipeStats from '../components/recipedetails/RecipeStats';
-
-interface RecipeDetailsType {
-  id: number;
-  name: string;
-  instructions: string;
-  ingredients: string[];
-  thumbnail: string;
-  postedAt: string;
-  postedBy: number;
-  createdAt: string;
-  updatedAt: string;
-  user?: {
-    id: number;
-    name: string;
-  };
-}
+import { RecipeDetails } from 'types';
 
 /**
  * RecipeDetails page component.
  * @returns JSX.Element
  */
 const RecipeDetails = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { loading, error } = useSelector((state: RootState) => state.recipes);
   const { user } = useSelector((state: RootState) => state.auth);
-  const [recipe, setRecipe] = useState<RecipeDetailsType | null>(null);
+  const [recipe, setRecipe] = useState<RecipeDetails | null>(null);
   const [checkedIngredients, setCheckedIngredients] = useState<boolean[]>([]);
 
   // Initialize data on component mount
@@ -54,7 +39,7 @@ const RecipeDetails = () => {
     if (id) {
       dispatch(getRecipeById(Number(id)))
         .unwrap()
-        .then(recipeData => {
+        .then((recipeData: RecipeDetails) => {
           setRecipe(recipeData);
           setCheckedIngredients(
             new Array(recipeData.ingredients.length).fill(false)
@@ -89,9 +74,8 @@ const RecipeDetails = () => {
         await dispatch(deleteRecipe(recipe.id)).unwrap();
         toast.success('Recipe deleted successfully');
         navigate('/');
-      } catch (error) {
-        console.log('error', error);
-        toast.error('Failed to delete recipe');
+      } catch (error: any) {
+        toast.error(error.message || 'Failed to delete recipe');
       }
     }
   };
@@ -175,7 +159,7 @@ const RecipeDetails = () => {
           </button>
         </div>
       </div>
-      {recipe && (
+      {recipe && recipe.thumbnail && (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <RecipeHeader
             recipe={recipe}

@@ -1,77 +1,65 @@
-import {
-  createSlice,
-  createAsyncThunk,
-  type PayloadAction,
-} from '@reduxjs/toolkit';
-import { authService } from '../../services/authService';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { authService } from 'services/authService';
+import { AuthResponse, RegisterData, LoginData, UserResponse } from 'types';
 
-interface AuthState {
+export interface AuthState {
   user: { id: number; name: string; email: string } | null;
+  isInitialized: boolean;
   loading: boolean;
   error: string | null;
-  isInitialized: boolean; // Track if initial auth check is complete
 }
 
 const initialState: AuthState = {
   user: null,
+  isInitialized: false,
   loading: false,
   error: null,
-  isInitialized: false,
 };
 
-export const registerUser = createAsyncThunk(
-  'auth/registerUser',
-  async (
-    formData: { name: string; email: string; password: string },
-    thunkAPI
-  ) => {
+export const register = createAsyncThunk(
+  'auth/register',
+  async (data: RegisterData) => {
     try {
-      const res = await authService.register(formData);
-      return res; // Assuming res contains { user, message }
-    } catch (error: Error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || 'Registration failed'
-      );
+      const response = await authService.register(data);
+      return response;
+    } catch (error: any) {
+      throw new Error(error.message || 'Registration failed');
     }
   }
 );
 
-export const loginUser = createAsyncThunk(
-  'auth/loginUser',
-  async (formData: { email: string; password: string }, thunkAPI) => {
+export const login = createAsyncThunk(
+  'auth/login',
+  async (data: LoginData) => {
     try {
-      const res = await authService.login(formData);
-      console.log('res', res); // ✅ Cookie is set
-      return res;
-    } catch (error: Error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || 'Login failed'
-      );
+      const response = await authService.login(data);
+      return response;
+    } catch (error: any) {
+      throw new Error(error.message || 'Login failed');
     }
   }
 );
 
-export const getMe = createAsyncThunk('auth/getMe', async (_, thunkAPI) => {
-  try {
-    const res = await authService.getMe();
-    return res;
-  } catch (error: Error) {
-    return thunkAPI.rejectWithValue(
-      error.response?.data?.message || 'Failed to fetch user'
-    );
-  }
-});
-
-export const logoutUser = createAsyncThunk(
-  'auth/logoutUser',
-  async (_, thunkAPI) => {
+export const getMe = createAsyncThunk(
+  'auth/getMe',
+  async () => {
     try {
-      const res = await authService.logout();
-      return res;
-    } catch (error: Error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || 'Logout failed'
-      );
+      const response = await authService.getMe();
+      return response;
+    } catch (error: any) {
+      throw new Error(error.message || 'Failed to fetch user');
+    }
+  }
+);
+
+export const logout = createAsyncThunk(
+  'auth/logout',
+  async () => {
+    try {
+      const response = await authService.logout();
+      return response;
+    } catch (error: any) {
+      throw new Error(error.message || 'Logout failed');
     }
   }
 );
@@ -80,91 +68,77 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    clearError: state => {
-      state.error = null;
-    },
-    resetAuth: state => {
+    logoutUser: (state) => {
       state.user = null;
+      state.isInitialized = true;
       state.loading = false;
       state.error = null;
-      state.isInitialized = false;
     },
   },
   extraReducers: builder => {
     builder
-      .addCase(registerUser.pending, state => {
+      // Register
+      .addCase(register.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        registerUser.fulfilled,
-        (
-          state,
-          action: PayloadAction<{ id: number; name: string; email: string }>
-        ) => {
-          state.loading = false;
-          state.user = action.payload;
-          state.isInitialized = true;
-        }
-      )
-      .addCase(registerUser.rejected, (state, action) => {
+      .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = (action.payload as string) || 'Registration failed';
+        state.user = action.payload.user;
         state.isInitialized = true;
       })
-      .addCase(loginUser.pending, state => {
+      .addCase(register.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Registration failed';
+        state.isInitialized = true;
+      })
+      // Login
+      .addCase(login.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        loginUser.fulfilled,
-        (
-          state,
-          action: PayloadAction<{ id: number; name: string; email: string }>
-        ) => {
-          console.log(' state.user = action.payload;', action.payload);
-          state.loading = false;
-          state.user = action.payload;
-          state.isInitialized = true;
-        }
-      )
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = (action.payload as string) || 'Login failed';
+        state.user = action.payload.user;
         state.isInitialized = true;
       })
+      .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Login failed';
+        state.isInitialized = true;
+      })
+      // Get Me
       .addCase(getMe.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        getMe.fulfilled,
-        (
-          state,
-          action: PayloadAction<{ id: number; name: string; email: string }>
-        ) => {
-          console.log(' action.payload', action.payload);
-          state.loading = false;
-          state.user = action.payload;
-          state.isInitialized = true;
-        }
-      )
-      .addCase(getMe.rejected, (state, action) => {
+      .addCase(getMe.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = (action.payload as string) || 'Failed to fetch user';
+        state.user = action.payload.user;
         state.isInitialized = true;
       })
-      .addCase(logoutUser.fulfilled, state => {
+      .addCase(getMe.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to fetch user';
+        state.isInitialized = true;
+      })
+      // Logout
+      .addCase(logout.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(logout.fulfilled, state => {
         state.loading = false;
         state.user = null;
         state.isInitialized = true;
       })
-      .addCase(logoutUser.rejected, (state, action) => {
+      .addCase(logout.rejected, (state, action) => {
         state.loading = false;
-        state.error = (action.payload as string) || 'Logout failed';
+        state.error = action.error.message || 'Logout failed';
+        state.isInitialized = true;
       });
   },
 });
 
-export const { clearError, resetAuth } = authSlice.actions;
+export const { logoutUser } = authSlice.actions;
 export default authSlice.reducer;

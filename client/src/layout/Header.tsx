@@ -11,13 +11,14 @@ import {
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '../redux/store';
+import type { AppDispatch, RootState } from '../redux/store';
 import { FaUser } from 'react-icons/fa6';
 import { logoutUser } from '../redux/slices/authSlice';
 
 const Header = () => {
   const { user } = useSelector((state: RootState) => state.auth);
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
+
   const navigate = useNavigate();
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);

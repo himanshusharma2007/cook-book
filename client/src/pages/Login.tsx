@@ -4,22 +4,20 @@
  */
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
-import type { RootState } from '../redux/store';
+import type { AppDispatch, RootState } from '../redux/store';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { FaUser, FaLock } from 'react-icons/fa';
+import { LoginData } from 'types';
+import { login } from 'redux/slices/authSlice';
 
 /**
  * Form data interface for login.
  */
-interface LoginForm {
-  email: string;
-  password: string;
-}
+
 
 /**
  * Yup validation schema for login form.
@@ -39,7 +37,8 @@ const schema = yup
  * @returns JSX.Element
  */
 const Login = () => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
+
   const navigate = useNavigate();
   const { loading, error, user } = useSelector(
     (state: RootState) => state.auth
@@ -49,7 +48,7 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginForm>({
+  } = useForm<LoginData>({
     resolver: yupResolver(schema),
   });
 
@@ -64,12 +63,12 @@ const Login = () => {
    * Handle form submission for login.
    * @param data - Form data containing email and password.
    */
-  const onSubmit = async (data: LoginForm) => {
+  const onSubmit = async (data: LoginData) => {
     try {
-      await dispatch(loginUser(data)).unwrap();
+      await dispatch(login(data)).unwrap();
       toast.success('Login successful!');
-    } catch (err) {
-      toast.error(err || 'Login failed');
+    } catch (error : any)  {
+      toast.error(error || 'Login failed');
     }
   };
 

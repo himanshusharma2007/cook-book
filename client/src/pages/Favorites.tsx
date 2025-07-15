@@ -5,7 +5,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getFavorites } from '../redux/slices/favoritesSlice';
-import type { RootState } from '../redux/store';
+import type { AppDispatch, RootState } from '../redux/store';
 import Loader from '../components/common/Loader';
 import RecipeCard from '../components/common/RecipeCard';
 
@@ -14,7 +14,8 @@ import RecipeCard from '../components/common/RecipeCard';
  * @returns JSX.Element
  */
 const Favorites = () => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
+
   const { recipes, loading, error } = useSelector(
     (state: RootState) => state.favorites
   );

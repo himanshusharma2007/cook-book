@@ -4,6 +4,7 @@
  */
 import { useFormContext } from 'react-hook-form';
 import { FaList, FaPlus, FaTimes } from 'react-icons/fa';
+import { RecipeForm } from 'types';
 
 /**
  * Props for IngredientsInput component.
@@ -12,8 +13,6 @@ interface IngredientsInputProps {
   fields: { id: string; value: string }[];
   append: (value: { value: string }) => void;
   remove: (index: number) => void;
-  register: ReturnType<typeof useFormContext>['register'];
-  errors: ReturnType<typeof useFormContext>['formState']['errors'];
 }
 
 /**
@@ -21,13 +20,9 @@ interface IngredientsInputProps {
  * @param props - Component props.
  * @returns JSX.Element
  */
-const IngredientsInput = ({
-  fields,
-  append,
-  remove,
-  register,
-  errors,
-}: IngredientsInputProps) => {
+const IngredientsInput = ({ fields, append, remove }: IngredientsInputProps) => {
+  const { register, formState: { errors } } = useFormContext<RecipeForm>();
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
       <label className="flex items-center text-lg merriweather font-semibold text-gray-700 mb-4">
