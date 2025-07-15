@@ -1,3 +1,4 @@
+import { RecipeResponse } from 'types';
 import api from './api';
 
 // Types
@@ -17,7 +18,7 @@ export const favoritesService = {
     try {
       const response = await api.post(`/favorites/${recipeId}`);
       return response.data;
-    } catch (error : any)  {
+    } catch (error: any) {
       throw new Error(
         error.response?.data?.message || 'Failed to add favorite'
       );
@@ -28,11 +29,11 @@ export const favoritesService = {
    * Fetches user's favorite recipes.
    * @returns Promise<FavoritesResponse>
    */
-  getFavorites: async (): Promise<FavoritesResponse> => {
+  getFavorites: async (): Promise<RecipeResponse[]> => {
     try {
       const response = await api.get('/favorites');
       return response.data;
-    } catch (error : any)  {
+    } catch (error: any) {
       throw new Error(
         error.response?.data?.message || 'Failed to fetch favorites'
       );
@@ -48,7 +49,7 @@ export const favoritesService = {
     try {
       const response = await api.delete(`/favorites/${recipeId}`);
       return response.data;
-    } catch (error : any)  {
+    } catch (error: any) {
       throw new Error(
         error.response?.data?.message || 'Failed to remove favorite'
       );

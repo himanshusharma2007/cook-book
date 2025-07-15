@@ -13,7 +13,11 @@ import { RecipeForm } from 'types';
  * @returns JSX.Element
  */
 const ImageUpload = () => {
-  const { setValue, watch, formState: { errors } } = useFormContext<RecipeForm>();
+  const {
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext<RecipeForm>();
   const [dragOver, setDragOver] = useState(false);
   const thumbnail = watch('thumbnail');
   const previewUrl = thumbnail ? URL.createObjectURL(thumbnail) : null;

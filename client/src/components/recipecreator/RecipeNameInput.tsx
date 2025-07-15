@@ -36,8 +36,15 @@ interface RecipeNameInputProps {
  * @returns JSX.Element
  */
 const RecipeNameInput = ({ suggestionsRef }: RecipeNameInputProps) => {
-  const { register, setValue, watch, formState: { errors } } = useFormContext<RecipeForm>();
-  const [recipeSuggestions, setRecipeSuggestions] = useState<ForkifyRecipe[]>([]);
+  const {
+    register,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext<RecipeForm>();
+  const [recipeSuggestions, setRecipeSuggestions] = useState<ForkifyRecipe[]>(
+    []
+  );
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [fetchingRecipe, setFetchingRecipe] = useState(false);

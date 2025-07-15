@@ -19,7 +19,7 @@ export const useFavoriteToggle = (recipeId: number) => {
     user: state.auth.user,
     favorites: state.favorites.recipes,
   }));
-  const isFavorite = favorites.some(fav => fav.id === recipeId);
+  const isFavorite = favorites?.some(fav => fav.id === recipeId);
 
   /**
    * Toggle favorite status for the recipe.

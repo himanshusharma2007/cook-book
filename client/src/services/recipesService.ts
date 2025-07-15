@@ -1,7 +1,5 @@
 import api from './api';
-import {  RecipeResponse, RecipeDetails } from 'types';
-
-
+import { RecipeResponse, RecipeDetails } from 'types';
 
 export const recipesService = {
   /**
@@ -11,10 +9,14 @@ export const recipesService = {
    */
   createRecipe: async (data: FormData): Promise<RecipeResponse> => {
     try {
-      const response = await api.post('/recipes', data);
+      const response = await api.post('/recipes', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Failed to create recipe');
+      throw new Error(
+        error.response?.data?.message || 'Failed to create recipe'
+      );
     }
   },
 
@@ -41,7 +43,9 @@ export const recipesService = {
       });
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Failed to fetch recipes');
+      throw new Error(
+        error.response?.data?.message || 'Failed to fetch recipes'
+      );
     }
   },
 
@@ -66,7 +70,9 @@ export const recipesService = {
       });
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Failed to fetch your recipes');
+      throw new Error(
+        error.response?.data?.message || 'Failed to fetch your recipes'
+      );
     }
   },
 
@@ -79,7 +85,9 @@ export const recipesService = {
     try {
       await api.delete(`/recipes/${id}`);
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Failed to delete recipe');
+      throw new Error(
+        error.response?.data?.message || 'Failed to delete recipe'
+      );
     }
   },
 
@@ -93,7 +101,9 @@ export const recipesService = {
       const response = await api.get(`/recipes/${id}`);
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Failed to fetch recipe');
+      throw new Error(
+        error.response?.data?.message || 'Failed to fetch recipe'
+      );
     }
   },
 };

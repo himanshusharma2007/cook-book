@@ -5,7 +5,6 @@ import { RecipeResponse } from 'types';
 
 // Define the recipe response type to match what the service returns
 
-
 interface RecipesState {
   recipes: RecipeResponse[];
   total: number;
@@ -37,7 +36,7 @@ export const createRecipe = createAsyncThunk(
         console.log(`key: ${key}, value:`, value);
       }
     }
-    
+
     const res = await recipesService.createRecipe(formData);
     return res; // Assuming res contains the recipe data
   }
@@ -108,10 +107,7 @@ const recipesSlice = createSlice({
       })
       .addCase(
         createRecipe.fulfilled,
-        (
-          state,
-          action: PayloadAction<RecipeResponse>
-        ) => {
+        (state, action: PayloadAction<RecipeResponse>) => {
           state.loading = false;
           state.recipes.push(action.payload);
         }
@@ -209,10 +205,7 @@ const recipesSlice = createSlice({
       })
       .addCase(
         getRecipeById.fulfilled,
-        (
-          state,
-          action: PayloadAction<RecipeResponse>
-        ) => {
+        (state, action: PayloadAction<RecipeResponse>) => {
           state.loading = false;
           // Optionally add or update the recipe in the state
           const index = state.recipes.findIndex(

@@ -20,7 +20,6 @@ import LoadMoreButton from '../components/common/LoadMoreButton';
 import { AppDispatch } from '../redux/store'; // Import AppDispatch
 import { Recipe, RecipeResponse } from 'types';
 
-
 /**
  * Home page component.
  * @returns JSX.Element

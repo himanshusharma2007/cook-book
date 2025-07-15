@@ -24,8 +24,15 @@ export class AuthService {
       throw new UnauthorizedException('All fields are required');
     }
 
+    // Check if user already exists
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      throw new UnauthorizedException('User already exists');
+    }
+
     // password gets hashed before saving
     const user = await User.create({ name, email, password });
+    console.log('check', user);
 
     const jwtSecret = process.env.JWT_SECRET;
     const jwtExpiresIn = process.env.JWT_EXPIRES_IN;
@@ -39,7 +46,6 @@ export class AuthService {
     };
 
     const token = sign({ id: user.id, email: user.email } as JwtPayload, jwtSecret, signOptions);
-
     return { user, token };
   }
 

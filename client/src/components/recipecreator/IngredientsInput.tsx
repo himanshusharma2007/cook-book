@@ -20,8 +20,15 @@ interface IngredientsInputProps {
  * @param props - Component props.
  * @returns JSX.Element
  */
-const IngredientsInput = ({ fields, append, remove }: IngredientsInputProps) => {
-  const { register, formState: { errors } } = useFormContext<RecipeForm>();
+const IngredientsInput = ({
+  fields,
+  append,
+  remove,
+}: IngredientsInputProps) => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<RecipeForm>();
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">

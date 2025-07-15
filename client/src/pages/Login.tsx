@@ -12,12 +12,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { FaUser, FaLock } from 'react-icons/fa';
 import { LoginData } from 'types';
-import { login } from '../redux/slices/authSlice';
+import { getMe, login } from '../redux/slices/authSlice';
 
 /**
  * Form data interface for login.
  */
-
 
 /**
  * Yup validation schema for login form.
@@ -66,8 +65,10 @@ const Login = () => {
   const onSubmit = async (data: LoginData) => {
     try {
       await dispatch(login(data)).unwrap();
+      await dispatch(getMe()).unwrap();
+      navigate('/');
       toast.success('Login successful!');
-    } catch (error : any)  {
+    } catch (error: any) {
       toast.error(error || 'Login failed');
     }
   };
@@ -83,7 +84,7 @@ const Login = () => {
         </h2>
         {error && (
           <p className="text-red-500 text-center">
-            {!error.includes('No token provided') &&
+            {!error.includes('Unauthorized') &&
               !error.includes('Failed to fetch user') &&
               error}
           </p>

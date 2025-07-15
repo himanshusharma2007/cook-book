@@ -28,47 +28,39 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const login = createAsyncThunk(
-  'auth/login',
-  async (data: LoginData) => {
-    try {
-      const response = await authService.login(data);
-      return response;
-    } catch (error: any) {
-      throw new Error(error.message || 'Login failed');
-    }
+export const login = createAsyncThunk('auth/login', async (data: LoginData) => {
+  try {
+    const response = await authService.login(data);
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message || 'Login failed');
   }
-);
+});
 
-export const getMe = createAsyncThunk(
-  'auth/getMe',
-  async () => {
-    try {
-      const response = await authService.getMe();
-      return response;
-    } catch (error: any) {
-      throw new Error(error.message || 'Failed to fetch user');
-    }
+export const getMe = createAsyncThunk('auth/getMe', async () => {
+  try {
+    const response = await authService.getMe();
+    console.log('response', response);
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message || 'Failed to fetch user');
   }
-);
+});
 
-export const logout = createAsyncThunk(
-  'auth/logout',
-  async () => {
-    try {
-      const response = await authService.logout();
-      return response;
-    } catch (error: any) {
-      throw new Error(error.message || 'Logout failed');
-    }
+export const logout = createAsyncThunk('auth/logout', async () => {
+  try {
+    const response = await authService.logout();
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message || 'Logout failed');
   }
-);
+});
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logoutUser: (state) => {
+    logoutUser: state => {
       state.user = null;
       state.isInitialized = true;
       state.loading = false;
@@ -113,8 +105,9 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(getMe.fulfilled, (state, action) => {
+        console.log('action.payload', action.payload);
         state.loading = false;
-        state.user = action.payload.user;
+        state.user = action.payload;
         state.isInitialized = true;
       })
       .addCase(getMe.rejected, (state, action) => {

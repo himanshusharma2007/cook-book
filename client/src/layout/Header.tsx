@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../redux/store';
 import { FaUser } from 'react-icons/fa6';
-import { logoutUser } from '../redux/slices/authSlice';
+import { logout } from '../redux/slices/authSlice';
 
 const Header = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -24,7 +24,7 @@ const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleLogout = () => {
-    dispatch(logoutUser());
+    dispatch(logout());
     toast.success('Logged out successfully!');
     navigate('/login');
     setDrawerOpen(false);

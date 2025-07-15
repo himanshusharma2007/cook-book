@@ -34,7 +34,7 @@ const RecipeCard = ({
   onDelete,
 }: RecipeCardProps) => {
   const favorites = useSelector((state: RootState) => state.favorites.recipes);
-  const isFavorite = favorites.some(fav => fav.id === recipe.id);
+  const isFavorite = favorites?.some(fav => fav.id === recipe.id);
 
   const { toggleFavorite } = useFavoriteToggle(recipe.id); // ✅ safe here
 

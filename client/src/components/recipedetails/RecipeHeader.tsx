@@ -11,7 +11,6 @@ import { Recipe } from 'types';
  * Recipe interface for header display.
  */
 
-
 /**
  * Props for RecipeHeader component.
  */
@@ -36,7 +35,7 @@ const RecipeHeader = ({
   const dispatch = useDispatch();
   const { toggleFavorite } = useFavoriteToggle(recipe.id);
   const favorites = useSelector((state: RootState) => state.favorites.recipes);
-  const isFavorite = favorites.some(fav => fav.id === recipe.id);
+  const isFavorite = favorites?.some(fav => fav.id === recipe.id);
 
   const handleFavoriteToggle = () => {
     toggleFavorite();

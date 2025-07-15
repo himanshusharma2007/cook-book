@@ -26,6 +26,8 @@ export const getFavorites = createAsyncThunk(
   'favorites/getFavorites',
   async () => {
     const res = await favoritesService.getFavorites();
+    console.log('res', res);
+
     return res;
   }
 );
@@ -63,13 +65,10 @@ const favoritesSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        getFavorites.fulfilled,
-        (state, action) => {
-          state.loading = false;
-          state.recipes = action.payload.recipes;
-        }
-      )
+      .addCase(getFavorites.fulfilled, (state, action) => {
+        state.loading = false;
+        state.recipes = action.payload;
+      })
       .addCase(getFavorites.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch favorites';

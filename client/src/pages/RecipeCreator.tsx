@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createRecipe } from '../redux/slices/recipesSlice';
 import type { RootState } from '../redux/store';
 import { toast } from 'react-toastify';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { FaUtensils } from 'react-icons/fa';
@@ -19,25 +19,16 @@ import { AppDispatch } from '../redux/store';
 import { RecipeForm } from 'types';
 
 /**
- * Yup validation schema for recipe form.
- */
-/**
- * Fixed Yup validation schema for recipe form.
- */
-/**
- * Fixed Yup validation schema for recipe form.
- */
-/**
- * Fixed Yup validation schema for recipe form.
- */
-/**
  * Yup validation schema for recipe form - matches RecipeForm interface exactly.
  */
 const schema = yup
   .object({
     name: yup.string().trim().required('Recipe name is required'),
     instructions: yup.string().trim().required('Instructions are required'),
-    thumbnail: yup.mixed<File>().nullable().required('Recipe image is required'),
+    thumbnail: yup
+      .mixed<File>()
+      .nullable()
+      .required('Recipe image is required'),
     ingredients: yup
       .array()
       .of(
@@ -49,6 +40,7 @@ const schema = yup
       .required('Ingredients are required'),
   })
   .required();
+
 /**
  * RecipeCreator page component.
  * @returns JSX.Element
@@ -58,15 +50,8 @@ const RecipeCreator = () => {
   const { loading, error } = useSelector((state: RootState) => state.recipes);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
-  const {
-    register,
-    control,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<RecipeForm>({
-    resolver: yupResolver<RecipeForm,any,any>(schema),
+  const methods = useForm<RecipeForm>({
+    resolver: yupResolver<RecipeForm, any, any>(schema),
     defaultValues: {
       name: '',
       instructions: '',
@@ -74,6 +59,14 @@ const RecipeCreator = () => {
       ingredients: [{ value: '' }],
     },
   });
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = methods;
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -110,6 +103,7 @@ const RecipeCreator = () => {
         data.ingredients.map(ing => ing.value).filter(ing => ing.trim())
       )
     );
+    console.log('data.thumbnail', data.thumbnail);
     if (data.thumbnail) {
       formData.append('thumbnail', data.thumbnail);
     }
@@ -144,37 +138,43 @@ const RecipeCreator = () => {
             <p className="text-red-600 text-center font-medium">{error}</p>
           </div>
         )}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="space-y-6">
-              <RecipeNameInput suggestionsRef={suggestionsRef} />
-              <ImageUpload />
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="space-y-6">
+                <RecipeNameInput suggestionsRef={suggestionsRef} />
+                <ImageUpload />
+              </div>
+              <div className="space-y-6">
+                <IngredientsInput
+                  fields={fields}
+                  append={append}
+                  remove={remove}
+                />
+              </div>
             </div>
-            <div className="space-y-6">
-              <IngredientsInput fields={fields} append={append} remove={remove} />
+            <InstructionsInput />
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-12 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-amber-600 focus:ring-4 focus:ring-orange-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
+              >
+                {loading ? (
+                  <div className="flex items-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Creating Recipe...
+                  </div>
+                ) : (
+                  <div className="flex items-center">
+                    <FaUtensils className="mr-2" />
+                    Create Recipe
+                  </div>
+                )}
+              </button>
             </div>
-          </div>
-          <InstructionsInput />
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-12 py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-amber-600 focus:ring-4 focus:ring-orange-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
-            >
-              {loading ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Creating Recipe...
-                </div>
-              ) : (
-                <div className="flex items-center">
-                  <FaUtensils className="mr-2" />
-                  Create Recipe
-                </div>
-              )}
-            </button>
-          </div>
-        </form>
+          </form>
+        </FormProvider>
       </div>
     </div>
   );

@@ -49,6 +49,7 @@ export class AuthController {
 
       return { id: user.id, name: user.name, email: user.email };
     } catch (error: any) {
+      console.log('error', error);
       throw new BadRequestException(error.message);
     }
   }
@@ -124,6 +125,7 @@ export class AuthController {
       sameSite: 'none',
     });
 
-    setResponseMeta(res, 'message', 'Logged out successfully');
+    setResponseMeta(res, 'Logged out successfully');
+    return { message: res.locals.message };
   }
 }

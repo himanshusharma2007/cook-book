@@ -12,7 +12,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
 import { RegisterData } from 'types';
-import { registerUser } from '../redux/slices/authSlice';
+import { getMe, registerUser } from '../redux/slices/authSlice';
 
 /**
  * Yup validation schema for registration form.
@@ -35,7 +35,9 @@ const schema = yup
 const Register = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, user } = useSelector((state: RootState) => state.auth);
+  const { loading, error, user } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   const {
     register,
@@ -59,6 +61,7 @@ const Register = () => {
   const onSubmit = async (data: RegisterData) => {
     try {
       await dispatch(registerUser(data)).unwrap();
+      await dispatch(getMe()).unwrap();
       toast.success('Registration successful!');
       setTimeout(() => {
         navigate('/');
@@ -79,7 +82,7 @@ const Register = () => {
         </h2>
         {error && (
           <p className="text-red-500 text-center">
-            {!error.includes('No token provided') &&
+            {!error.includes('Unauthorized') &&
               !error.includes('Failed to fetch user') &&
               error}
           </p>
@@ -106,7 +109,9 @@ const Register = () => {
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
             />
             {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
           <div className="relative">
@@ -118,7 +123,9 @@ const Register = () => {
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
             />
             {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.password.message}
+              </p>
             )}
           </div>
           <button

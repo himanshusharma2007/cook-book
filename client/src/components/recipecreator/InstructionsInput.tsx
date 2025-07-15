@@ -12,7 +12,11 @@ import { RecipeForm } from 'types';
  * @returns JSX.Element
  */
 const InstructionsInput = () => {
-  const { setValue, watch, formState: { errors } } = useFormContext<RecipeForm>();
+  const {
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext<RecipeForm>();
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
