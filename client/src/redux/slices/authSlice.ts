@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { authService } from 'services/authService';
+import { authService } from '../../services/authService';
 import { AuthResponse, RegisterData, LoginData, UserResponse } from 'types';
 
 export interface AuthState {
@@ -16,7 +16,7 @@ const initialState: AuthState = {
   error: null,
 };
 
-export const register = createAsyncThunk(
+export const registerUser = createAsyncThunk(
   'auth/register',
   async (data: RegisterData) => {
     try {
@@ -78,16 +78,16 @@ const authSlice = createSlice({
   extraReducers: builder => {
     builder
       // Register
-      .addCase(register.pending, state => {
+      .addCase(registerUser.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(register.fulfilled, (state, action) => {
+      .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
         state.isInitialized = true;
       })
-      .addCase(register.rejected, (state, action) => {
+      .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Registration failed';
         state.isInitialized = true;

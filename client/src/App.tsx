@@ -16,7 +16,7 @@ import { getMe } from './redux/slices/authSlice';
 import Loader from './components/common/Loader';
 import { RootState } from './redux/store';
 import { AppDispatch } from './redux/store'; // Import AppDispatch for typed dispatch
-import RecipeDetails from 'pages/RecipeDetails';
+import RecipeDetails from './pages/RecipeDetails';
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {

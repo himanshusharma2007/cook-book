@@ -21,6 +21,18 @@ import { RecipeForm } from 'types';
 /**
  * Yup validation schema for recipe form.
  */
+/**
+ * Fixed Yup validation schema for recipe form.
+ */
+/**
+ * Fixed Yup validation schema for recipe form.
+ */
+/**
+ * Fixed Yup validation schema for recipe form.
+ */
+/**
+ * Yup validation schema for recipe form - matches RecipeForm interface exactly.
+ */
 const schema = yup
   .object({
     name: yup.string().trim().required('Recipe name is required'),
@@ -33,7 +45,8 @@ const schema = yup
           value: yup.string().trim().required('Ingredient cannot be empty'),
         })
       )
-      .min(1, 'At least one ingredient is required'),
+      .min(1, 'At least one ingredient is required')
+      .required('Ingredients are required'),
   })
   .required();
 /**
@@ -41,7 +54,7 @@ const schema = yup
  * @returns JSX.Element
  */
 const RecipeCreator = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch: AppDispatch = useDispatch();
   const { loading, error } = useSelector((state: RootState) => state.recipes);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +66,7 @@ const RecipeCreator = () => {
     watch,
     formState: { errors },
   } = useForm<RecipeForm>({
-    resolver: yupResolver<RecipeForm, object, RecipeForm>(schema),
+    resolver: yupResolver<RecipeForm,any,any>(schema),
     defaultValues: {
       name: '',
       instructions: '',

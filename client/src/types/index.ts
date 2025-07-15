@@ -28,14 +28,16 @@ export interface Recipe {
     thumbnail?: File;
   }
   
+
   export interface RecipeResponse {
     id: number;
     name: string;
-    instructions: string;
-    ingredients: string[];
-    thumbnail: string;
+    instructions?: string;
+    ingredients?: string[];
+    thumbnail: string | null;
     postedBy: number;
   }
+  
   
   export interface RecipeForm {
     name: string;

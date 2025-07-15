@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { favoritesService } from '../../services/favoritesService';
+import { FavoritesResponse, RecipeResponse } from 'types';
 
 interface FavoritesState {
-  recipes: { id: number; name: string; thumbnail: string; postedBy: number }[];
+  recipes: RecipeResponse[];
   loading: boolean;
   error: string | null;
 }
@@ -17,13 +18,13 @@ export const addFavorite = createAsyncThunk(
   'favorites/addFavorite',
   async (recipeId: number) => {
     const res = await favoritesService.addFavorite(recipeId);
-    return { id: recipeId, message: res.message }; // Return recipeId for state update
+    return { id: recipeId, message: res.message };
   }
 );
 
 export const getFavorites = createAsyncThunk(
   'favorites/getFavorites',
-  async _ => {
+  async () => {
     const res = await favoritesService.getFavorites();
     return res;
   }
@@ -33,7 +34,7 @@ export const removeFavorite = createAsyncThunk(
   'favorites/removeFavorite',
   async (recipeId: number) => {
     await favoritesService.removeFavorite(recipeId);
-    return recipeId; // Return ID to filter out the removed favorite
+    return recipeId;
   }
 );
 
@@ -53,7 +54,6 @@ const favoritesSlice = createSlice({
       })
       .addCase(addFavorite.fulfilled, (state, _) => {
         state.loading = false;
-        // Optionally fetch updated favorites if needed
       })
       .addCase(addFavorite.rejected, (state, action) => {
         state.loading = false;
@@ -65,14 +65,9 @@ const favoritesSlice = createSlice({
       })
       .addCase(
         getFavorites.fulfilled,
-        (
-          state,
-          action: PayloadAction<
-            { id: number; name: string; thumbnail: string; postedBy: number }[]
-          >
-        ) => {
+        (state, action) => {
           state.loading = false;
-          state.recipes = action.payload;
+          state.recipes = action.payload.recipes;
         }
       )
       .addCase(getFavorites.rejected, (state, action) => {

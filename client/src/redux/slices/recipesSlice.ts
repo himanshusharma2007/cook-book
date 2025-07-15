@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { recipesService } from 'services/recipesService';
+import { recipesService } from '../../services/recipesService';
 import { RecipeResponse } from 'types';
 
 // Define the recipe response type to match what the service returns

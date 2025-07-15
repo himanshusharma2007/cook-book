@@ -12,7 +12,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { FaUser, FaLock } from 'react-icons/fa';
 import { LoginData } from 'types';
-import { login } from 'redux/slices/authSlice';
+import { login } from '../redux/slices/authSlice';
 
 /**
  * Form data interface for login.

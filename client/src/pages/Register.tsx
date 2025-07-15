@@ -11,14 +11,8 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
-import { AnyAction, Dispatch } from '@reduxjs/toolkit';
 import { RegisterData } from 'types';
-import { register } from 'redux/slices/authSlice';
-
-/**
- * Form data interface for registration.
- */
-
+import { registerUser } from '../redux/slices/authSlice';
 
 /**
  * Yup validation schema for registration form.
@@ -40,13 +34,11 @@ const schema = yup
  */
 const Register = () => {
   const dispatch: AppDispatch = useDispatch();
-
   const navigate = useNavigate();
-  const { loading, error, user } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { loading, error, user } = useSelector((state: RootState) => state.auth);
 
   const {
+    register,
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterData>({
@@ -66,13 +58,13 @@ const Register = () => {
    */
   const onSubmit = async (data: RegisterData) => {
     try {
-      await dispatch(register(data)).unwrap();
+      await dispatch(registerUser(data)).unwrap();
       toast.success('Registration successful!');
       setTimeout(() => {
         navigate('/');
       }, 100);
-    } catch (err : any) {
-      toast.error(err || 'Registration failed');
+    } catch (err: any) {
+      toast.error(err.message || 'Registration failed');
     }
   };
 
@@ -110,13 +102,11 @@ const Register = () => {
             <input
               type="email"
               placeholder="Email"
-              {...register('string')}
+              {...register('email')}
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
             />
             {errors.email && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.email.message}
-              </p>
+              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
             )}
           </div>
           <div className="relative">
@@ -124,13 +114,11 @@ const Register = () => {
             <input
               type="password"
               placeholder="Password"
-              {...register('string')}
+              {...register('password')}
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
             />
             {errors.password && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.password.message}
-              </p>
+              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
             )}
           </div>
           <button
