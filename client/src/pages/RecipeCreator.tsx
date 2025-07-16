@@ -17,6 +17,7 @@ import IngredientsInput from '../components/recipecreator/IngredientsInput';
 import InstructionsInput from '../components/recipecreator/InstructionsInput';
 import { AppDispatch } from '../redux/store';
 import { RecipeForm } from 'types';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Yup validation schema for recipe form - matches RecipeForm interface exactly.
@@ -49,7 +50,7 @@ const RecipeCreator = () => {
   const dispatch: AppDispatch = useDispatch();
   const { loading, error } = useSelector((state: RootState) => state.recipes);
   const suggestionsRef = useRef<HTMLDivElement>(null);
-
+  const navigate = useNavigate();
   const methods = useForm<RecipeForm>({
     resolver: yupResolver<RecipeForm, any, any>(schema),
     defaultValues: {
@@ -114,6 +115,7 @@ const RecipeCreator = () => {
       setValue('instructions', '');
       setValue('thumbnail', null);
       setValue('ingredients', [{ value: '' }]);
+      navigate('/');
     } catch (error: any) {
       toast.error(error.message || 'Failed to create recipe');
     }

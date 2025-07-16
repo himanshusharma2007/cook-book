@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation, Link } from 'react-router-dom';
 import {
   FaHome,
   FaPlus,
@@ -115,11 +115,11 @@ const Header = () => {
     <header
       className={`${
         isIndex ? 'bg-transparent' : 'bg-red-900'
-      } absolute top-0 left-0 right-0 z-50 text-white h-20 px-4 md:px-8 lg:px-20 flex justify-between items-center shadow-lg`}
+      } absolute top-0 left-0 right-0 z-50 text-white h-20 px-4 md:px-8 lg:px-20 flex justify-between items-center `}
     >
-      <div className="text-3xl md:text-4xl font-bold dancing-script relative">
+      <Link to="/" className="text-3xl md:text-4xl font-bold dancing-script relative">
         CookBook
-      </div>
+      </Link>
       {/* Hamburger for mobile */}
       <button
         className="md:hidden text-2xl focus:outline-none"

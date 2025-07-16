@@ -32,7 +32,7 @@ const Home = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
-
+  console.log('recipes', recipes)
   // Initialize data on component mount
   useEffect(() => {
     dispatch(getRecipes({ search: '', page: 1, limit: 8 }));
@@ -96,9 +96,16 @@ const Home = () => {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
           style={{
             backgroundImage: `url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&h=600&fit=crop')`,
+            backgroundAttachment: "fixed",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            minHeight: "50vh",
           }}
         ></div>
-        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
+        <div className="relative flex justify-center items-center h-full  z-10 ">
+          <div className="wraper w-full md:mt-32 flex flex-col items-center justify-center text-center px-4 ">
+
           <div className="mb-8">
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 drop-shadow-lg dancing-script">
               CookBook
@@ -112,6 +119,7 @@ const Home = () => {
             activeFilter={activeFilter}
             onSearch={handleSearch}
           />
+          </div>
         </div>
       </div>
 
@@ -135,6 +143,7 @@ const Home = () => {
               postedBy: recipeResponse.postedBy,
               instructions: recipeResponse.instructions,
               ingredients: recipeResponse.ingredients,
+              user: recipeResponse.user,
             };
             return (
               <RecipeCard

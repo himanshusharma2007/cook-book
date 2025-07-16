@@ -39,7 +39,7 @@ const RecipeStats = ({ recipe, formatDate }: RecipeStatsProps) => {
           <Users className="w-6 h-6 text-orange-500" />
           <div>
             <p className="text-sm text-gray-500">Created by</p>
-            <p className="font-medium text-gray-800">
+            <p className="font-medium text-gray-800 capitalize">
               {recipe.user?.name || 'Unknown'}
             </p>
           </div>
@@ -53,24 +53,7 @@ const RecipeStats = ({ recipe, formatDate }: RecipeStatsProps) => {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Calendar className="w-6 h-6 text-orange-500" />
-          <div>
-            <p className="text-sm text-gray-500">Created</p>
-            <p className="font-medium text-gray-800">
-              {formatDate(recipe.createdAt)}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <Calendar className="w-6 h-6 text-orange-500" />
-          <div>
-            <p className="text-sm text-gray-500">Last Updated</p>
-            <p className="font-medium text-gray-800">
-              {formatDate(recipe.updatedAt)}
-            </p>
-          </div>
-        </div>
+    
       </div>
     </div>
   );

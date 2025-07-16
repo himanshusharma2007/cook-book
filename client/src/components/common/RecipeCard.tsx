@@ -72,7 +72,7 @@ const RecipeCard = ({
         <h3 className="text-lg merriweather font-semibold text-gray-800 mb-2 line-clamp-2">
           {recipe.name}
         </h3>
-        <p className="text-sm text-gray-600 mb-4">
+        <p className="text-sm text-gray-600 mb-4 capitalize">
           By: {recipe.user?.name?.split(' ')[0] || 'Unknown'}
         </p>
         <div className="mt-auto flex flex-col justify-between gap-2">

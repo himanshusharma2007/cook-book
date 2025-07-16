@@ -35,6 +35,7 @@ export interface RecipeResponse {
   ingredients?: string[];
   thumbnail: string | null;
   postedBy: number;
+  user?: { id: number; name: string , email: string  , createdAt: string, updatedAt: string };
 }
 
 export interface RecipeForm {

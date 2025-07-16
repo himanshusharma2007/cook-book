@@ -50,6 +50,7 @@ export const getRecipes = createAsyncThunk(
       params.page,
       params.limit
     );
+    console.log('res', res)
     return {
       recipes: res.recipes,
       total: res.total,
